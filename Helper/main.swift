@@ -116,13 +116,20 @@ final class SleepController: @unchecked Sendable {
             unlink(tmp)
             return false
         }
-        let dfd = open(dbDir, O_RDONLY)   // 디렉터리 항목도 디스크에 반영
-        if dfd >= 0 { fsync(dfd); close(dfd) }
+        return syncDir()   // 이름 교체까지 디스크에 남아야 장애 후에도 기록이 유지됨
+    }
+
+    private static func syncDir() -> Bool {
+        let dfd = open(dbDir, O_RDONLY)
+        guard dfd >= 0 else { logger.error("open db dir failed: \(errno)"); return false }
+        defer { close(dfd) }
+        guard fsync(dfd) == 0 else { logger.error("fsync db dir failed: \(errno)"); return false }
         return true
     }
 
     private static func remove(_ path: String) -> Bool {
-        unlink(path) == 0 || errno == ENOENT
+        guard unlink(path) == 0 || errno == ENOENT else { return false }
+        return syncDir()
     }
 
     @discardableResult
@@ -143,9 +150,12 @@ final class SleepController: @unchecked Sendable {
         for attempt in 1...3 {
             _ = run(["-a", "disablesleep", "0"])
             if readStateLocked() == 0 {
-                if !setOwnedLocked(false) { logger.error("sleep restored but marker removal failed") }
-                logger.notice("sleep restored (attempt \(attempt))")
-                return true
+                if setOwnedLocked(false) || setOwnedLocked(false) {
+                    logger.notice("sleep restored (attempt \(attempt))")
+                    return true
+                }
+                logger.error("sleep restored but ownership marker could not be removed")
+                return false
             }
             usleep(500_000)
         }
@@ -260,11 +270,11 @@ final class SleepController: @unchecked Sendable {
     func prepareForUpgrade() -> Bool {
         queue.sync {
             upgrading = true
-            holders.removeAll()
             guard restoreLocked(), !owned else {
-                upgrading = false
+                upgrading = false   // 복구 실패: 보유권을 그대로 두어 연결 종료 시 복구 경로가 살아 있게
                 return false
             }
+            holders.removeAll()
             return true
         }
     }
@@ -286,7 +296,9 @@ final class SleepController: @unchecked Sendable {
             let state = readStateLocked()
             switch state {
             case 1:
-                if owned || adopt {
+                // 인수는 예전 sudoers 버전이 설치돼 있던 경우(이전용)에만 허용 — 다른 도구가 켠 설정을 가져가지 않음
+                let legacyPresent = FileManager.default.fileExists(atPath: Self.legacySudoers)
+                if owned || (adopt && legacyPresent) {
                     if !owned {
                         guard setOwnedLocked(true) else { return (false, 1, "cannot record ownership") }
                         logger.notice("adopted existing disablesleep")

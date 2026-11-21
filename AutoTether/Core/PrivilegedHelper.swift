@@ -71,7 +71,8 @@ final class PrivilegedHelper {
     }
 
     /// 응답/오류/타임아웃 중 먼저 오는 것 하나로 끝내는 호출
-    private func call<T: Sendable>(timeout: Double = 10,
+    /// 헬퍼 쪽 작업(pmset 최대 10초 × 여러 번)보다 길게 기다림 — 앱이 먼저 포기하고 잘못 판단하지 않도록
+    private func call<T: Sendable>(timeout: Double = 45,
                                    _ body: @escaping (AutoTetherHelperProtocol, @escaping @Sendable (T) -> Void) -> Void) async throws -> T {
         let c = try makeConnection()
         return try await withCheckedThrowingContinuation { (cont: CheckedContinuation<T, Error>) in
@@ -102,7 +103,7 @@ final class PrivilegedHelper {
     }
 
     func prepareForUpgrade() async throws -> Bool {
-        try await call(timeout: 5) { h, done in h.prepareForUpgrade { done($0) } }
+        try await call(timeout: 90) { h, done in h.prepareForUpgrade { done($0) } }
     }
 
     /// macOS 인증 창(Touch ID 또는 관리자 암호)을 띄워 권한을 얻고, 헬퍼가 직접 검증하게 제출.
@@ -112,7 +113,7 @@ final class PrivilegedHelper {
         guard let grant else { return (false, "인증이 취소되었거나 실패함") }
         defer { grant.destroy() }   // 헬퍼 검증이 끝난 뒤에 권한 폐기 (재사용 방지)
         do {
-            let r: (Bool, String) = try await call(timeout: 15) { h, done in
+            let r: (Bool, String) = try await call { h, done in
                 h.grantConsent(grant.externalForm) { ok, m in done((ok, m)) }
             }
             return r

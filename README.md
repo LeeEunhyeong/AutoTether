@@ -19,7 +19,7 @@ A macOS menu bar app that keeps you online. When Wi-Fi drops (or stays connected
 | **Priority failover** | Tries your devices in order (e.g. iPhone → iPad). Triggers after about 10 s without Wi-Fi, or 30 s on Wi-Fi with no internet. |
 | **Remote hotspot wake-up** | Uses Instant Hotspot to turn on the device's hotspot over Bluetooth and fetch its credentials. You don't type a password. |
 | **Return to Wi-Fi** | While tethered, checks every 2 minutes for a saved Wi-Fi network and switches back to save mobile data. |
-| **Lid-closed awake mode** | Keeps the Mac awake with the lid closed, optionally only while tethered or above a battery floor. When you switch it on in the app, macOS asks for **Touch ID or your admin password**. Switching it off revokes that consent. |
+| **Lid-closed awake mode** | Keeps the Mac awake with the lid closed, optionally only while tethered or above a battery floor. When you switch it on in the app and no consent is stored yet, macOS asks for **Touch ID or your admin password**. Switching it off requests revocation, and it won't turn on again until the helper confirms. |
 | **Usage dashboard** | Today / 7 / 30 days / all time, daily or hourly charts, per-device breakdown, monthly cap gauge, session history. |
 | **Menu bar first** | Liquid Glass UI (macOS 26), master on/off switch, launch at login, notifications, activity log. |
 
@@ -31,7 +31,7 @@ New installs fill the priority list automatically with the devices found nearby 
 - **Modern iOS hotspots are IPv6-only + CLAT** (`192.0.0.2`), so the classic `172.20.10.x` check fails. Tethering is detected from the `NWPathMonitor` *expensive* path flag instead.
 - **iOS rotates the hotspot BSSID between sessions**, so BSSID pinning breaks failover. Trust is based on security capability (WPA3) instead.
 - **CoreWLAN reports `.wpa3Transition` as supported even on WPA2-only APs.** Only `.wpa3Personal` is a reliable signal of SAE support.
-- **`networksetup -setairportnetwork` often fails on the first hotspot → Wi-Fi attempt.** Success is judged by real network state, with up to 3 retries.
+- **`networksetup -setairportnetwork` often fails on the first hotspot → Wi-Fi attempt.** Success is judged by real network state, with up to 3 attempts in total.
 - Usage comes from 64-bit interface counters (`sysctl NET_RT_IFLIST2`). They're sampled every 2 s while tethered and every 10 s otherwise, and stored in hourly buckets in SQLite (GRDB).
 
 ## Security design
@@ -44,8 +44,8 @@ The app joins Wi-Fi networks automatically and holds a root-level power setting,
 | WPA2 rogue AP capturing the handshake | Auto-join **requires WPA3 (SAE)** and verifies the negotiated security after joining. WPA2 is an explicit per-device opt-in. |
 | Rogue open network when returning to Wi-Fi | Open/OWE/WEP never accepted. An SSID is dropped if any weak AP shares its name. Never hands control to macOS auto-join. Security re-checked after joining. |
 | Privilege misuse | The root helper is installed with `SMAppService` and approved in System Settings. It accepts only XPC clients signed by the same team **and** with the app's identifier, and the app checks the helper's signature too. Its only verbs: read state, turn `pmset disablesleep` on/off, record/revoke consent, remove the legacy sudoers file from older versions, and restore-then-exit before an upgrade. |
-| Enabling without the user's consent | Switching the option on in the app shows a macOS Authorization Services prompt (Touch ID or admin password). The **helper verifies** that authorization itself and destroys it after use. It only accepts it if the authorization rule in the system database still has the expected admin/non-shared/short-timeout policy. Switching off revokes consent, and the app won't re-enable until the helper confirms the revocation. |
-| Crash leaves the Mac unable to sleep | The helper restores the setting as soon as the app's XPC connection drops (about 0.5 s after `kill -9` in our tests). It writes an ownership marker *before* enabling, so if the helper itself stops, it restores at its next start (it runs at boot). |
+| Enabling without the user's consent | Switching the option on in the app shows a macOS Authorization Services prompt (Touch ID or admin password). The **helper verifies** that authorization itself and destroys it after use. It only accepts consent if, when the helper started, the authorization rule in the system database had the expected admin/non-shared/short-timeout policy. Consent is stored per user until revoked. Switching off requests revocation, and the app won't re-enable until the helper confirms it. |
+| Crash leaves the Mac unable to sleep | When the app's last XPC connection drops, the helper attempts to restore the setting immediately (about 0.5 s after `kill -9`, measured with the first helper version). It writes an ownership marker *before* enabling, so if the helper itself stops, it attempts the restore at its next start (at boot, while the helper stays registered and approved). |
 | Code injection / debugging | Hardened Runtime. Release builds strip `get-task-allow`. Diagnostic code is compiled into Debug builds only. |
 | Secrets on disk | Hotspot passwords never appear in process arguments, logs or files. Logs and DB are `0600`. Log input is sanitized. |
 
@@ -85,7 +85,7 @@ xcodebuild -project AutoTether.xcodeproj -scheme AutoTether -derivedDataPath bui
 
 The unit tests cover the decision logic: hotspot candidate selection and ranking, WPA2/WPA3 classification (using security sets measured on iOS 26), return-to-Wi-Fi filtering, tether detection, usage math, and the SQLite store. Before relying on a test, try a mutation check: reintroduce a bug that was fixed in the field (such as trusting `.wpa3Transition`) and confirm the test fails.
 
-Debug builds also include a diagnostic CLI for real-device checks. It uses a separate DB and never touches power settings:
+Debug builds also include a diagnostic CLI for real-device checks. It uses a separate DB, and in diagnostic mode the sleep guard is passive (no helper calls, no power changes):
 
 ```sh
 APP=build/Build/Products/Debug/AutoTether.app/Contents/MacOS/AutoTether
@@ -107,7 +107,7 @@ AutoTether/App      app entry, model, debug CLI & snapshot renderer (Debug only)
 AutoTether/Core     engine, Wi-Fi control, policy (pure logic), usage store, sleep guard, XPC client
 AutoTether/Bridge   Objective-C bridges: Instant Hotspot (private API), interface counters
 AutoTether/UI       menu bar panel and main window (SwiftUI, Liquid Glass)
-Helper/             privileged LaunchDaemon (root): sleep setting only, signature-checked XPC, auth verification
+Helper/             privileged LaunchDaemon (root): sleep setting + consent + legacy cleanup/upgrade, signature-checked XPC
 Shared/             XPC protocol and code-signing identity shared by app and helper
 Tests/              unit tests (no app host; nothing touches your network or power settings)
 ```

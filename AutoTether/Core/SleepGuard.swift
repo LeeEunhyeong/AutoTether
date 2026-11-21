@@ -45,12 +45,18 @@ final class SleepGuard {
     private var consentPromptAllowed = false
     /// 사용자가 설정을 바꿀 때마다 증가 → 인증 창이 떠 있는 동안 설정이 바뀌면 그 인증 결과는 버림
     private var prefEpoch = 0
+    /// 진단 CLI 모드: 헬퍼·전원 설정에 일절 손대지 않음
+    private let passive: Bool
+    /// reconcile 진행 중에 다시 요청이 들어옴 → 끝난 뒤 한 번 더 실행 (요청 유실 방지)
+    private var rerunRequested = false
     private static var appVersion: String {
         (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String) ?? "?"
     }
 
-    init() {
+    init(passive: Bool = false) {
+        self.passive = passive
         refreshBattery()
+        guard !passive else { return }
         Task {
             await refreshHelperStatus()
             await refreshStateAsync()
@@ -64,16 +70,28 @@ final class SleepGuard {
     func refreshHelperStatus() async {
         switch helper.registration {
         case .enabled:
-            if let s = try? await helper.status(), s.version == HelperConstants.protocolVersion {
-                helperState = .ready
-                consented = s.consented
-            } else if Defaults[.helperUpgradeAttemptedFor] != Self.appVersion {
-                // 앱이 업데이트돼 이전 헬퍼가 실행 중일 수 있음 → 이 버전에서 한 번만 교체 시도
-                Defaults[.helperUpgradeAttemptedFor] = Self.appVersion
-                await upgradeHelper()
-                await refreshHelperStatus()
-                return
-            } else {
+            var needsUpgrade = false
+            do {
+                let s = try await helper.status()
+                if s.version == HelperConstants.protocolVersion {
+                    helperState = .ready
+                    consented = s.consented
+                } else {
+                    needsUpgrade = true
+                }
+            } catch PrivilegedHelper.HelperError.timeout {
+                helperState = .unavailable   // 응답이 늦을 뿐 → 교체하지 않음
+            } catch {
+                needsUpgrade = true          // 이전 프로토콜(메시지 형식 불일치) 가능성
+            }
+            if needsUpgrade {
+                if Defaults[.helperUpgradeAttemptedFor] != Self.appVersion {
+                    // 앱이 업데이트돼 이전 헬퍼가 실행 중일 수 있음 → 이 버전에서 한 번만 교체 시도
+                    Defaults[.helperUpgradeAttemptedFor] = Self.appVersion
+                    await upgradeHelper()
+                    await refreshHelperStatus()
+                    return
+                }
                 helperState = .unavailable
             }
         case .requiresApproval: helperState = .needsApproval
@@ -93,6 +111,10 @@ final class SleepGuard {
                 return
             }
             log("헬퍼가 복구를 확인하지 못해 교체를 미룸", .warning)
+            return
+        } catch PrivilegedHelper.HelperError.timeout {
+            // 헬퍼가 복구 중일 수 있음 → 절대 내리지 않음
+            log("헬퍼 교체 준비 응답 없음 — 교체하지 않음", .warning)
             return
         } catch {
             // 이전 프로토콜(교체 기능 없음): 실제 전원 상태가 '꺼짐'일 때만 재등록
@@ -170,30 +192,32 @@ final class SleepGuard {
     /// 설정 + 테더링 상태 + 배터리를 보고 원하는 상태로 맞춤
     func reconcile(isTethered: Bool) async {
         lastTethered = isTethered
-        guard !busy else { return }
+        guard !passive else { return }
+        guard !busy else { rerunRequested = true; return }
         busy = true
         defer { busy = false }
+        repeat {
+            rerunRequested = false
+            await reconcileOnce()
+        } while rerunRequested
+    }
 
+    private func reconcileOnce() async {
+        let startEpoch = prefEpoch
         await refreshHelperStatus()
         let prefOn = Defaults[.preventLidSleep]
         var (want, reason) = desired()
 
         // 설정을 끄면 인증 동의도 철회 → 다시 켤 때 다시 인증. 철회가 '확인'될 때까지 재활성화 금지.
         if !prefOn && consented { Defaults[.pendingConsentRevoke] = true }
-        if Defaults[.pendingConsentRevoke] {
-            guard helperState == .ready else {
-                lastReason = prefOn ? "이전 권한 반납 확인 대기 중" : nil
-                updateIdleAssertion(false)
-                return
-            }
+        if Defaults[.pendingConsentRevoke] && helperState == .ready {
             if (try? await helper.revokeConsent()) == true {
                 Defaults[.pendingConsentRevoke] = false
                 consented = false
                 log("잠자기 방지 권한 반납 확인 (다시 켤 때 인증 필요)")
             } else {
                 log("권한 반납을 확인하지 못함 — 다음 확인 때 다시 시도", .warning)
-                lastReason = prefOn ? "이전 권한 반납 확인 대기 중" : nil
-                return
+                // 아래 '철회 대기' 처리로 이어짐 (켜지 않고, 꺼져야 하면 끔)
             }
         }
 
@@ -206,6 +230,13 @@ final class SleepGuard {
                 if r == .requiresApproval { helper.openApprovalSettings() }
                 await refreshHelperStatus()
             }
+            if helperState == .ready && Defaults[.pendingConsentRevoke] {
+                // 등록 직후: 남아 있던 이전 동의를 먼저 철회
+                if (try? await helper.revokeConsent()) == true {
+                    Defaults[.pendingConsentRevoke] = false
+                    consented = false
+                }
+            }
             if helperState != .ready {
                 reason = helperState == .unavailable ? "권한 헬퍼 응답 없음"
                                                      : "권한 헬퍼 승인 필요 (시스템 설정 › 로그인 항목)"
@@ -214,6 +245,14 @@ final class SleepGuard {
                 updateIdleAssertion(false)
                 return
             }
+        }
+
+        // 철회가 확인되기 전에는 어떤 경우에도 켜지 않음
+        if Defaults[.pendingConsentRevoke] {
+            lastReason = prefOn ? "이전 권한 반납 확인 대기 중" : nil
+            updateIdleAssertion(false)
+            if !prefOn { await turnOffIfOwned(reason: nil) }
+            return
         }
 
         // macOS 인증(Touch ID/관리자 암호)으로 동의 받기 — 사용자가 직접 켰을 때만 인증 창을 띄움
@@ -255,6 +294,11 @@ final class SleepGuard {
         lastReason = reason
 
         if want {
+            // ON 요청 직전 최종 확인: 그사이 사용자가 설정을 바꿨거나 철회가 예약됐으면 켜지 않음
+            guard startEpoch == prefEpoch, !Defaults[.pendingConsentRevoke], Defaults[.preventLidSleep] else {
+                rerunRequested = true
+                return
+            }
             // 매번 보유 등록 (멱등): 헬퍼가 재시작돼 복구했어도 다시 켜짐
             await apply(true, adopt: Defaults[.weDisabledSleep])
         } else if helperState == .ready && (owned || Defaults[.weDisabledSleep]) && sleepDisabled {
@@ -263,6 +307,12 @@ final class SleepGuard {
         } else {
             updateIdleAssertion(false)
         }
+    }
+
+    private func turnOffIfOwned(reason: String?) async {
+        guard helperState == .ready else { return }
+        await refreshStateAsync()
+        if owned && sleepDisabled { await apply(false, adopt: false, reason: reason) }
     }
 
     private func apply(_ on: Bool, adopt: Bool, reason: String? = nil) async {
@@ -303,6 +353,7 @@ final class SleepGuard {
 
     /// 헬퍼가 아직 승인되지 않았는데 예전 버전이 켠 상태가 남아 있으면 예전 규칙으로 복구 (시작 시 1회)
     func restoreLegacyIfNeeded() {
+        guard !passive else { return }
         guard Defaults[.weDisabledSleep], FileManager.default.fileExists(atPath: Self.legacySudoersPath) else { return }
         _ = Shell.runSync("/usr/bin/sudo", ["-n", "/usr/bin/pmset", "-a", "disablesleep", "0"], timeout: 5)
         applyPmset(Shell.runSync("/usr/bin/pmset", ["-g"], timeout: 3))
@@ -337,10 +388,13 @@ final class SleepGuard {
     }
 
     func uninstallHelper() async {
+        guard !passive else { return }
         guard !busy else { log("잠자기 설정 변경 중 — 잠시 후 다시 시도하세요", .warning); return }
         busy = true
         defer { busy = false }
         Defaults[.preventLidSleep] = false
+        // 철회가 확인되지 않으면 예약을 남김 → 다시 등록될 때 켜기 전에 반드시 먼저 철회
+        Defaults[.pendingConsentRevoke] = true
         if helperState == .ready {
             _ = try? await helper.setSleepDisabled(false, adoptExisting: false)
             if (try? await helper.revokeConsent()) == true {

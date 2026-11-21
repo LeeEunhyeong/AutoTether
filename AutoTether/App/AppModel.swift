@@ -32,7 +32,15 @@ final class AppModel {
     let hotspots = HotspotService()
     let engine: TetherEngine
     let usage = UsageTracker()
-    let sleep = SleepGuard()
+    let sleep = SleepGuard(passive: AppModel.isDiagnostic)
+
+    static var isDiagnostic: Bool {
+        #if DEBUG
+        DebugCLI.isActive
+        #else
+        false
+        #endif
+    }
     let location = LocationAuth()
     var section: Section = .dashboard
 
@@ -47,8 +55,6 @@ final class AppModel {
         started = true
         log("AutoTether 시작 (v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"))")
 
-        // 이전 버전(sudoers 방식)이 켠 disablesleep이 남아 있으면 복구 (새 버전은 헬퍼가 자동 복구)
-        if Defaults[.weDisabledSleep] && !Defaults[.preventLidSleep] { sleep.restoreLegacyIfNeeded() }
 
         #if DEBUG
         let diagnostic = DebugCLI.isActive
@@ -88,6 +94,10 @@ final class AppModel {
 
         guard !diagnostic else { return }   // 진단 모드에선 전원 설정을 건드리지 않음
 
+        // 이전 버전(sudoers 방식)이 켠 disablesleep이 남아 있으면 설정과 관계없이 먼저 복구
+        // (새 헬퍼가 승인되면 인증 후 다시 켬)
+        sleep.restoreLegacyIfNeeded()
+
         // 마스터 스위치 OFF → 진행 중인 자동 전환 즉시 취소
         Task { [weak self] in
             for await enabled in Defaults.updates(.isEnabled, initial: false) {
@@ -96,14 +106,17 @@ final class AppModel {
         }
 
         // 잠자기 방지 설정 변경 즉시 반영
+        // 켜기/끄기 의도는 기다리지 않고 즉시 기록 (reconcile이 인증 창 등으로 오래 걸려도 유실되지 않게)
         Task { [weak self] in
-            var previous = Defaults[.preventLidSleep]
-            for await _ in Defaults.updates([.preventLidSleep, .lidSleepOnlyWhileTethered, .lidSleepBatteryFloor]) {
+            for await on in Defaults.updates(.preventLidSleep, initial: false) {
                 guard let self else { return }
-                let now = Defaults[.preventLidSleep]
-                if now && !previous { self.sleep.userEnabledLidSleep() }   // 사용자가 켬 → 인증 창 허용
-                if !now && previous { self.sleep.userDisabledLidSleep() }  // 사용자가 끔 → 동의 철회 예약
-                previous = now
+                if on { self.sleep.userEnabledLidSleep() } else { self.sleep.userDisabledLidSleep() }
+                Task { await self.sleep.reconcile(isTethered: self.engine.snapshot.isTethered) }
+            }
+        }
+        Task { [weak self] in
+            for await _ in Defaults.updates([.lidSleepOnlyWhileTethered, .lidSleepBatteryFloor]) {
+                guard let self else { return }
                 await self.sleep.reconcile(isTethered: self.engine.snapshot.isTethered)
             }
         }

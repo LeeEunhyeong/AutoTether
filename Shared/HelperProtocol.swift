@@ -5,7 +5,7 @@ import Foundation
 enum HelperConstants {
     static let machService = "com.imgold.AutoTether.helper"
     static let plistName = "com.imgold.AutoTether.helper.plist"
-    static let protocolVersion = 2
+    static let protocolVersion = 3
 
     /// 잠자기 방지를 켤 때 사용자가 macOS 인증(Touch ID 또는 관리자 암호)으로 받아야 하는 권한 이름
     static let authorizationRight = "com.imgold.AutoTether.preventLidSleep"

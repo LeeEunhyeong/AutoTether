@@ -43,18 +43,21 @@ struct BrandSwitchStyle: ToggleStyle {
                 configuration.label
                 Spacer(minLength: 8)
             }
-            track(isOn: configuration.isOn)
-                .onTapGesture {
-                    guard isEnabled else { return }
-                    withAnimation(.snappy(duration: 0.22)) { configuration.isOn.toggle() }
-                }
+            BrandSwitchTrack(isOn: configuration.$isOn, size: size, enabled: isEnabled)
         }
         .opacity(isEnabled ? 1 : 0.45)
     }
+}
 
-    private func track(isOn: Bool) -> some View {
-        let s = size
-        return ZStack(alignment: isOn ? .trailing : .leading) {
+/// 스위치 본체: 클릭·Space 키·포커스 링 지원 (시스템 스위치와 같은 키보드 조작)
+private struct BrandSwitchTrack: View {
+    @Binding var isOn: Bool
+    let size: CGSize
+    let enabled: Bool
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        ZStack(alignment: isOn ? .trailing : .leading) {
             Capsule()
                 .fill(isOn ? AnyShapeStyle(Brand.gradient) : AnyShapeStyle(Color.primary.opacity(0.16)))
                 .overlay(Capsule().strokeBorder(Color.primary.opacity(isOn ? 0 : 0.10), lineWidth: 0.5))
@@ -64,8 +67,22 @@ struct BrandSwitchStyle: ToggleStyle {
                 .shadow(color: .black.opacity(0.25), radius: 1.5, y: 0.5)
                 .padding(2)
         }
-        .frame(width: s.width, height: s.height)
+        .frame(width: size.width, height: size.height)
+        .overlay {   // 키보드 포커스 표시
+            Capsule().strokeBorder(Color.accentColor.opacity(focused ? 0.8 : 0), lineWidth: 2.5).padding(-3)
+        }
         .contentShape(Capsule())
+        .onTapGesture(perform: flip)
+        .focusable(enabled)
+        .focused($focused)
+        .focusEffectDisabled()
+        .onKeyPress(.space) { flip(); return .handled }
+        .onKeyPress(.return) { flip(); return .handled }
+    }
+
+    private func flip() {
+        guard enabled else { return }
+        withAnimation(.snappy(duration: 0.22)) { isOn.toggle() }
     }
 }
 
