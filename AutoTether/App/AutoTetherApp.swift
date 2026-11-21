@@ -41,7 +41,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         MainActor.assumeIsolated {
             #if DEBUG
-            DemoMode.install()   // --demo-data: 실제 설정을 건드리지 않는 익명 데모 값 (스크린샷용)
+            DebugCLI.rejectUnknownFlags()
+            DemoMode.install()
             #endif
             AppModel.shared.start()
             #if DEBUG

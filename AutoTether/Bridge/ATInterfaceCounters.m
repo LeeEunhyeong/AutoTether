@@ -18,7 +18,6 @@ BOOL ATReadInterfaceCounters(NSString *interfaceName, uint64_t *rxBytes, uint64_
         while (p + sizeof(struct if_msghdr) <= end) {
             struct if_msghdr *ifm = (struct if_msghdr *)p;
             size_t msglen = ifm->ifm_msglen;
-            // 레코드 길이가 헤더보다 작거나 버퍼를 넘으면 파싱 중단
             if (msglen < sizeof(struct if_msghdr) || msglen > (size_t)(end - p)) break;
             if (ifm->ifm_version != RTM_VERSION) { p += msglen; continue; }
             if (ifm->ifm_type == RTM_IFINFO2 && msglen >= sizeof(struct if_msghdr2)) {

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// 앱 브랜드 색 (아이콘 그라데이션과 같은 계열)
 enum Brand {
     static let mint = Color(red: 0.20, green: 0.86, blue: 0.56)
     static let blue = Color(red: 0.04, green: 0.52, blue: 0.96)
@@ -8,8 +7,6 @@ enum Brand {
                                          startPoint: .leading, endPoint: .trailing)
 }
 
-/// 켜짐이 브랜드 색으로 분명하게 보이는 스위치.
-/// 시스템 스위치는 메뉴바 패널처럼 키 윈도가 아닌 곳에서 '비활성' 회색으로 그려져 켜짐/꺼짐이 색으로 구분되지 않음.
 struct BrandSwitchStyle: ToggleStyle {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.controlSize) private var controlSize
@@ -27,10 +24,9 @@ struct BrandSwitchStyle: ToggleStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         if snapshot {
-            body(configuration)   // 스크린샷: 접근성 대체 뷰(AppKit 토글)를 만들지 않음 — 글래스 렌더링을 깨뜨림
+            body(configuration)
         } else {
             body(configuration)
-                // VoiceOver·키보드 접근성은 시스템 토글과 동일하게
                 .accessibilityRepresentation {
                     Toggle(isOn: configuration.$isOn) { configuration.label }
                 }
@@ -49,7 +45,6 @@ struct BrandSwitchStyle: ToggleStyle {
     }
 }
 
-/// 스위치 본체: 클릭·Space 키·포커스 링 지원 (시스템 스위치와 같은 키보드 조작)
 private struct BrandSwitchTrack: View {
     @Binding var isOn: Bool
     let size: CGSize
@@ -68,7 +63,7 @@ private struct BrandSwitchTrack: View {
                 .padding(2)
         }
         .frame(width: size.width, height: size.height)
-        .overlay {   // 키보드 포커스 표시
+        .overlay {
             Capsule().strokeBorder(Color.accentColor.opacity(focused ? 0.8 : 0), lineWidth: 2.5).padding(-3)
         }
         .contentShape(Capsule())

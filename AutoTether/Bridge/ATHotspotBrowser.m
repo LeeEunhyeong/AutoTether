@@ -26,7 +26,7 @@
 
 - (void)start {
     if (!self.session) return;
-    // macOS 업데이트로 비공개 API가 바뀌면 크래시 대신 기능 비활성화
+    // Disable instead of crashing if a macOS update changes the private API.
     if (![self.session respondsToSelector:NSSelectorFromString(@"setDelegate:")] ||
         ![self.session respondsToSelector:NSSelectorFromString(@"enableHotspotForDevice:withCompletionHandler:")]) {
         self.session = nil;
@@ -48,7 +48,6 @@ static id ATValue(id obj, NSString *key) {
     @try { return [obj valueForKey:key]; } @catch (__unused id e) { return nil; }
 }
 
-// SFRemoteHotspotSessionDelegate
 - (void)session:(id)session updatedFoundDevices:(NSArray *)list {
     NSArray *snapshot = [list isKindOfClass:NSArray.class] ? [list copy] : @[];
     self.rawDevices = snapshot;
@@ -90,7 +89,7 @@ static id ATValue(id obj, NSString *key) {
         finish(nil, nil, [NSError errorWithDomain:@"AutoTether" code:2 userInfo:@{NSLocalizedDescriptionKey: @"이 macOS에서 지원되지 않는 API"}]);
         return;
     }
-    // Handler signature observed on macOS 26–27: (ssid, password, ?, error) – types checked defensively.
+    // Observed on macOS 26–27: (ssid, password, ?, error).
     void (^handler)(id, id, id, id) = ^(id a, id b, id c, id d) {
         NSString *ssid = [a isKindOfClass:NSString.class] ? a : nil;
         NSString *pw = [b isKindOfClass:NSString.class] ? b : nil;

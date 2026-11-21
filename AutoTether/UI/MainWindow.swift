@@ -29,7 +29,7 @@ struct MainWindow: View {
                 }
             }
             .frame(minWidth: 640, minHeight: 560)
-            .toggleStyle(.brandSwitch)   // 모든 스위치를 브랜드 색으로 (체크박스는 개별 지정 유지)
+            .toggleStyle(.brandSwitch)
         }
         .tint(Brand.mint)
         .onAppear { NSApp.setActivationPolicy(.regular); NSApp.activate() }
@@ -51,7 +51,7 @@ struct MiniStatus: View {
     }
 }
 
-// MARK: - 대시보드
+// MARK: - Dashboard
 
 struct DashboardView: View {
     var body: some View {
@@ -87,130 +87,127 @@ struct DashboardContent: View {
         let buckets = period == .today ? (store?.hourly(since: since) ?? []) : (store?.daily(since: since) ?? [])
         let devices = store?.byDevice(since: since) ?? []
         let sessions = store?.sessions(limit: 12) ?? []
-        let cal = Calendar.current
-        let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: .now)) ?? .now
-        let monthTotal = store?.totals(since: monthStart).total ?? 0
+        let monthTotal = store?.totals(since: .startOfMonth).total ?? 0
 
         VStack(alignment: .leading, spacing: 18) {
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("데이터 사용량").font(.largeTitle.bold())
-                        Text("개인용 핫스팟(테더링)으로 사용한 데이터만 집계합니다").font(.callout).foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    Picker("기간", selection: $period.animation(.snappy)) {
-                        ForEach(Period.allCases) { Text($0.rawValue).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                    .frame(width: 260)
-                    .modifier(SnapshotSegmentFallback(selection: period.rawValue, options: Period.allCases.map(\.rawValue)))
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("데이터 사용량").font(.largeTitle.bold())
+                    Text("개인용 핫스팟(테더링)으로 사용한 데이터만 집계합니다").font(.callout).foregroundStyle(.secondary)
                 }
-
-                StatusCard()
-
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
-                    KPITile(title: "총 사용량", value: Format.bytes(totals.total), symbol: "sum", tint: .green)
-                    KPITile(title: "다운로드", value: Format.bytes(totals.rx), symbol: "arrow.down.circle.fill", tint: .teal)
-                    KPITile(title: "업로드", value: Format.bytes(totals.tx), symbol: "arrow.up.circle.fill", tint: .blue)
-                    KPITile(title: "테더링 시간", value: Format.duration(totals.seconds), symbol: "clock.fill", tint: .orange)
+                Spacer()
+                Picker("기간", selection: $period.animation(.snappy)) {
+                    ForEach(Period.allCases) { Text($0.rawValue).tag($0) }
                 }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 260)
+                .modifier(SnapshotSegmentFallback(selection: period.rawValue, options: Period.allCases.map(\.rawValue)))
+            }
 
-                Card(title: period == .today ? "시간대별 사용량" : "일별 사용량", symbol: "chart.bar.fill") {
-                    if buckets.isEmpty {
-                        EmptyChart()
+            StatusCard()
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
+                KPITile(title: "총 사용량", value: Format.bytes(totals.total), symbol: "sum", tint: .green)
+                KPITile(title: "다운로드", value: Format.bytes(totals.rx), symbol: "arrow.down.circle.fill", tint: .teal)
+                KPITile(title: "업로드", value: Format.bytes(totals.tx), symbol: "arrow.up.circle.fill", tint: .blue)
+                KPITile(title: "테더링 시간", value: Format.duration(totals.seconds), symbol: "clock.fill", tint: .orange)
+            }
+
+            Card(title: period == .today ? "시간대별 사용량" : "일별 사용량", symbol: "chart.bar.fill") {
+                if buckets.isEmpty {
+                    EmptyChart()
+                } else {
+                    let unit = ChartUnit.pick(maxBytes: Dictionary(grouping: buckets, by: \.date).values.map { $0.reduce(0) { $0 + $1.total } }.max() ?? 0)
+                    Chart(buckets, id: \.self) { b in
+                        BarMark(x: .value("시간", b.date, unit: period == .today ? .hour : .day),
+                                y: .value(unit.label, Double(b.total) / unit.divisor))
+                            .foregroundStyle(by: .value("기기", b.device))
+                            .cornerRadius(3)
+                    }
+                    .chartForegroundStyleScale(domain: DeviceColors.domain(buckets.map(\.device)), range: DeviceColors.palette)
+                    .chartYAxisLabel(unit.label)
+                    .accessibilityLabel("\(period == .today ? "시간대별" : "일별") 사용량 차트, 단위 \(unit.label)")
+                    .chartLegend(position: .top, alignment: .leading)
+                    .frame(height: 220)
+                }
+            }
+
+            HStack(alignment: .top, spacing: 12) {
+                Card(title: "기기별", symbol: "chart.pie.fill") {
+                    if devices.isEmpty {
+                        EmptyChart(height: 160)
                     } else {
-                        let unit = ChartUnit.pick(maxBytes: Dictionary(grouping: buckets, by: \.date).values.map { $0.reduce(0) { $0 + $1.total } }.max() ?? 0)   // 기기별로 쌓인 막대의 최댓값 기준
-                        Chart(buckets, id: \.self) { b in
-                            BarMark(x: .value("시간", b.date, unit: period == .today ? .hour : .day),
-                                    y: .value(unit.label, Double(b.total) / unit.divisor))
-                                .foregroundStyle(by: .value("기기", b.device))
-                                .cornerRadius(3)
-                        }
-                        .chartForegroundStyleScale(domain: DeviceColors.domain(buckets.map(\.device)), range: DeviceColors.palette)
-                        .chartYAxisLabel(unit.label)
-                        .accessibilityLabel("\(period == .today ? "시간대별" : "일별") 사용량 차트, 단위 \(unit.label)")
-                        .chartLegend(position: .top, alignment: .leading)
-                        .frame(height: 220)
-                    }
-                }
-
-                HStack(alignment: .top, spacing: 12) {
-                    Card(title: "기기별", symbol: "chart.pie.fill") {
-                        if devices.isEmpty {
-                            EmptyChart(height: 160)
-                        } else {
-                            HStack(spacing: 16) {
-                                Chart(devices, id: \.device) { d in
-                                    SectorMark(angle: .value("사용량", d.total), innerRadius: .ratio(0.62), angularInset: 2)
-                                        .foregroundStyle(by: .value("기기", d.device))
-                                        .cornerRadius(4)
-                                }
-                                .chartForegroundStyleScale(domain: DeviceColors.domain(devices.map(\.device)), range: DeviceColors.palette)
-                                .chartLegend(.hidden)
-                                .frame(width: 150, height: 150)
-                                VStack(alignment: .leading, spacing: 8) {
-                                    ForEach(devices, id: \.device) { d in
-                                        VStack(alignment: .leading, spacing: 0) {
-                                            Text(d.device).font(.callout.weight(.medium))
-                                            Text(Format.bytes(d.total)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-                                        }
+                        HStack(spacing: 16) {
+                            Chart(devices, id: \.device) { d in
+                                SectorMark(angle: .value("사용량", d.total), innerRadius: .ratio(0.62), angularInset: 2)
+                                    .foregroundStyle(by: .value("기기", d.device))
+                                    .cornerRadius(4)
+                            }
+                            .chartForegroundStyleScale(domain: DeviceColors.domain(devices.map(\.device)), range: DeviceColors.palette)
+                            .chartLegend(.hidden)
+                            .frame(width: 150, height: 150)
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(devices, id: \.device) { d in
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text(d.device).font(.callout.weight(.medium))
+                                        Text(Format.bytes(d.total)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
                                     }
                                 }
-                                Spacer(minLength: 0)
                             }
+                            Spacer(minLength: 0)
                         }
                     }
-                    Card(title: "이번 달", symbol: "calendar") {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(Format.bytes(monthTotal)).font(.system(size: 30, weight: .bold).monospacedDigit())
-                            if monthlyLimitGB > 0 {
-                                let ratio = min(Double(monthTotal) / (monthlyLimitGB * 1e9), 1)
-                                Gauge(value: ratio) {
-                                    Text("월 한도")
-                                } currentValueLabel: {
-                                    Text("\(Int(ratio * 100))%")
-                                } minimumValueLabel: { Text("0") } maximumValueLabel: { Text("\(Int(monthlyLimitGB))GB") }
-                                .tint(Gradient(colors: [.green, .yellow, .red]))
-                            } else {
-                                Text("설정에서 월 데이터 한도를 지정하면 진행률이 표시됩니다")
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .frame(width: 260)
                 }
-                .fixedSize(horizontal: false, vertical: true)   // 두 카드 높이를 같게
+                Card(title: "이번 달", symbol: "calendar") {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(Format.bytes(monthTotal)).font(.system(size: 30, weight: .bold).monospacedDigit())
+                        if monthlyLimitGB > 0 {
+                            let ratio = min(Double(monthTotal) / (monthlyLimitGB * 1e9), 1)
+                            Gauge(value: ratio) {
+                                Text("월 한도")
+                            } currentValueLabel: {
+                                Text("\(Int(ratio * 100))%")
+                            } minimumValueLabel: { Text("0") } maximumValueLabel: { Text("\(Int(monthlyLimitGB))GB") }
+                            .tint(Gradient(colors: [.green, .yellow, .red]))
+                        } else {
+                            Text("설정에서 월 데이터 한도를 지정하면 진행률이 표시됩니다")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(width: 260)
+            }
+            .fixedSize(horizontal: false, vertical: true)
 
-                Card(title: "최근 테더링 세션", symbol: "list.bullet.rectangle") {
-                    if sessions.isEmpty {
-                        Text("아직 기록이 없습니다").foregroundStyle(.secondary).frame(maxWidth: .infinity, minHeight: 60)
-                    } else {
-                        VStack(spacing: 0) {
-                            ForEach(sessions) { s in
-                                HStack {
-                                    Image(systemName: s.device.lowercased().contains("ipad") ? "ipad" : "iphone").frame(width: 20)
-                                    Text(s.device).font(.callout.weight(.medium))
-                                    Text(s.start.formatted(.dateTime.month().day().hour().minute()))
-                                        .font(.caption).foregroundStyle(.secondary)
-                                    Spacer()
-                                    Text(Format.duration(s.duration)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-                                    Text(Format.bytes(s.total)).font(.callout.monospacedDigit().weight(.semibold))
-                                        .frame(width: 90, alignment: .trailing)
-                                }
-                                .padding(.vertical, 7)
-                                if s.id != sessions.last?.id { Divider().opacity(0.4) }
+            Card(title: "최근 테더링 세션", symbol: "list.bullet.rectangle") {
+                if sessions.isEmpty {
+                    Text("아직 기록이 없습니다").foregroundStyle(.secondary).frame(maxWidth: .infinity, minHeight: 60)
+                } else {
+                    VStack(spacing: 0) {
+                        ForEach(sessions) { s in
+                            HStack {
+                                Image(systemName: HotspotDevice.symbol(for: s.device)).frame(width: 20)
+                                Text(s.device).font(.callout.weight(.medium))
+                                Text(s.start.formatted(.dateTime.month().day().hour().minute()))
+                                    .font(.caption).foregroundStyle(.secondary)
+                                Spacer()
+                                Text(Format.duration(s.duration)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                                Text(Format.bytes(s.total)).font(.callout.monospacedDigit().weight(.semibold))
+                                    .frame(width: 90, alignment: .trailing)
                             }
+                            .padding(.vertical, 7)
+                            if s.id != sessions.last?.id { Divider().opacity(0.4) }
                         }
                     }
                 }
             }
-            .padding(24)
+        }
+        .padding(24)
     }
 }
 
-/// 기기별 색을 우선순위 순서로 고정
 enum DeviceColors {
     static let palette: [Color] = [.green, .blue, .orange, .purple, .pink, .teal, .yellow]
     static func domain(_ names: [String]) -> [String] {
@@ -255,7 +252,6 @@ struct Card<Content: View>: View {
     }
 }
 
-/// 스크린샷 렌더링(ImageRenderer)은 AppKit 컨트롤을 그리지 못함 → 스크린샷일 때만 SwiftUI로 그린 모양으로 대체
 struct SnapshotRenderingKey: EnvironmentKey { static let defaultValue = false }
 extension EnvironmentValues {
     var snapshotRendering: Bool {
@@ -286,7 +282,6 @@ struct SnapshotSegmentFallback: ViewModifier {
     }
 }
 
-/// 차트 Y축 단위를 데이터 크기에 맞춰 선택 (카드의 GB 표기와 어긋나지 않도록)
 struct ChartUnit {
     let label: String
     let divisor: Double
@@ -308,7 +303,7 @@ struct EmptyChart: View {
     }
 }
 
-// MARK: - 기기 우선순위
+// MARK: - Devices
 
 struct DevicesView: View {
     @Environment(AppModel.self) private var model
@@ -326,7 +321,7 @@ struct DevicesView: View {
                     HStack(spacing: 12) {
                         Image(systemName: "line.3.horizontal").foregroundStyle(.tertiary)
                         Text("\(idx + 1)").font(.headline.monospacedDigit()).frame(width: 18)
-                        Image(systemName: device?.symbol ?? (item.name.lowercased().contains("ipad") ? "ipad" : "iphone"))
+                        Image(systemName: device?.symbol ?? HotspotDevice.symbol(for: item.name))
                             .font(.title2).frame(width: 26)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(item.name).font(.body.weight(.medium))
@@ -408,7 +403,7 @@ struct DevicesView: View {
             } header: {
                 Text("직접 추가")
             } footer: {
-                Text("기기 이름은 핫스팟 Wi-Fi 이름(SSID)과 같아야 합니다. 주변에서 발견되지 않는 기기는 macOS에 저장된 Wi-Fi 프로필로만 연결합니다. 자동 연결은 WPA3(SAE)로만 합니다 (같은 이름의 가짜 WPA2 AP가 비밀번호를 빼내는 공격 방지). WPA3를 지원하지 않는 기기만 'WPA2 허용'을 켜세요.")
+                Text("기기 이름은 핫스팟 Wi-Fi 이름(SSID)과 같아야 합니다. 주변에서 발견되지 않는 기기는 macOS에 저장된 Wi-Fi 프로필로만 연결합니다. 자동 연결은 WPA3(SAE)를 광고하는 AP만 고르고, 실제로 SAE가 협상되지 않으면 바로 끊습니다. WPA3를 지원하지 않는 기기만 'WPA2 허용'을 켜세요.")
             }
         }
         .formStyle(.grouped)
@@ -417,7 +412,7 @@ struct DevicesView: View {
 
     private func add() {
         let name = newName.trimmingCharacters(in: .whitespaces)
-        guard !name.isEmpty, name.count <= 32,   // Wi-Fi SSID 최대 32바이트
+        guard !name.isEmpty, name.count <= 32,
               !priority.contains(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) else { return }
         priority.append(PriorityItem(name: name))
         newName = ""
@@ -431,7 +426,7 @@ struct DevicesView: View {
     }
 }
 
-// MARK: - 설정
+// MARK: - Settings
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
@@ -503,7 +498,7 @@ struct SettingsView: View {
                 LabeledContent("월 데이터 한도") {
                     HStack {
                         TextField("월 데이터 한도", value: Binding(get: { monthlyLimitGB }, set: { monthlyLimitGB = max(0, min($0, 100_000)) }), format: .number, prompt: Text("0"))
-                            .labelsHidden()   // Form 안에서는 제목이 라벨로 한 번 더 표시되므로 숨김
+                            .labelsHidden()
                             .frame(width: 70)
                             .multilineTextAlignment(.trailing)
                         Text("GB · 0이면 사용 안 함").foregroundStyle(.secondary)
@@ -544,7 +539,7 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - 활동 기록
+// MARK: - Activity
 
 struct ActivityView: View {
     @Environment(AppModel.self) private var model

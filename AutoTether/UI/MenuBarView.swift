@@ -24,8 +24,6 @@ struct MenuBarView: View {
         .tint(Brand.mint)
     }
 
-    // MARK: 헤더 + 마스터 스위치
-
     private var header: some View {
         HStack(spacing: 10) {
             AppGlyph(size: 34)
@@ -44,8 +42,6 @@ struct MenuBarView: View {
                 .controlSize(.large)
         }
     }
-
-    // MARK: 기기 우선순위
 
     private var devices: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -67,15 +63,12 @@ struct MenuBarView: View {
         }
     }
 
-    // MARK: 사용량 요약
-
     private var usage: some View {
         let _ = model.usage.revision
         let store = model.usage.store
         let cal = Calendar.current
         let today = store?.totals(since: cal.startOfDay(for: .now)).total ?? 0
-        let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: .now)) ?? .now
-        let month = store?.totals(since: monthStart).total ?? 0
+        let month = store?.totals(since: .startOfMonth).total ?? 0
         let week = store?.daily(since: cal.date(byAdding: .day, value: -6, to: cal.startOfDay(for: .now))) ?? []
 
         return Button { open(.dashboard) } label: {
@@ -115,8 +108,6 @@ struct MenuBarView: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 16))
     }
 
-    // MARK: 잠자기 방지
-
     private var sleepRow: some View {
         HStack(spacing: 10) {
             Image(systemName: preventLidSleep ? "moon.zzz.fill" : "moon.zzz")
@@ -145,8 +136,6 @@ struct MenuBarView: View {
         return model.sleep.lastReason.map { "대기 중 — \($0)" } ?? "적용 중…"
     }
 
-    // MARK: 하단
-
     private var footer: some View {
         HStack(spacing: 8) {
             Button { open(.dashboard) } label: { Label("대시보드", systemImage: "chart.bar.xaxis") }
@@ -169,8 +158,6 @@ struct MenuBarView: View {
         NSApp.activate()
     }
 }
-
-// MARK: - 상태 카드
 
 struct StatusCard: View {
     @Environment(AppModel.self) private var model
@@ -240,8 +227,6 @@ struct SpeedPill: View {
     }
 }
 
-// MARK: - 기기 행
-
 struct DeviceRow: View {
     @Environment(AppModel.self) private var model
     let rank: Int
@@ -259,7 +244,7 @@ struct DeviceRow: View {
                 .frame(width: 20, height: 20)
                 .background(Circle().fill(isCurrent ? Color.green : Color.secondary.opacity(0.2)))
                 .foregroundStyle(isCurrent ? .white : .primary)
-            Image(systemName: device?.symbol ?? (item.name.lowercased().contains("ipad") ? "ipad" : "iphone"))
+            Image(systemName: device?.symbol ?? HotspotDevice.symbol(for: item.name))
                 .font(.title3)
                 .frame(width: 22)
                 .foregroundStyle(item.enabled ? .primary : .tertiary)
@@ -336,9 +321,8 @@ struct AppGlyph: View {
     }
 }
 
-
-/// 스크린샷 렌더링 전용: ImageRenderer는 '글래스보다 앞쪽, 글래스 밖'에 AppKit 뷰가 하나도 없으면 Liquid Glass를 전부 빼고 그림.
-/// 글래스 컨테이너 안에 두면 그 컨테이너가 사라지고, 루트 배경에 두면 모든 글래스가 사라짐 (실측) → 헤더의 스위치 뒤에만 둠.
+// ImageRenderer drops all glass unless the tree has an AppKit-backed view, and one inside a glass
+// container hides that container. Behind the header switch is the spot that works.
 struct SnapshotGlassAnchor: ViewModifier {
     @Environment(\.snapshotRendering) private var snapshot
     func body(content: Content) -> some View {
@@ -353,7 +337,6 @@ struct SnapshotGlassAnchor: ViewModifier {
     }
 }
 
-/// 글래스 카드. 스크린샷 렌더링에서는 마지막 글래스 카드가 통째로 빠지는 ImageRenderer 문제가 있어 같은 모양의 반투명 면으로 대체.
 struct GlassOrSnapshotCard: ViewModifier {
     @Environment(\.snapshotRendering) private var snapshot
     let cornerRadius: CGFloat

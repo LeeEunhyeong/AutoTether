@@ -33,6 +33,10 @@ final class AppModel {
     let engine: TetherEngine
     let usage = UsageTracker()
     let sleep = SleepGuard(passive: AppModel.isDiagnostic)
+    let location = LocationAuth()
+    var section: Section = .dashboard
+
+    private var started = false
 
     static var isDiagnostic: Bool {
         #if DEBUG
@@ -41,10 +45,6 @@ final class AppModel {
         false
         #endif
     }
-    let location = LocationAuth()
-    var section: Section = .dashboard
-
-    private var started = false
 
     private init() {
         engine = TetherEngine(hotspots: hotspots)
@@ -55,14 +55,8 @@ final class AppModel {
         started = true
         log("AutoTether 시작 (v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"))")
 
+        let diagnostic = Self.isDiagnostic
 
-        #if DEBUG
-        let diagnostic = DebugCLI.isActive
-        #else
-        let diagnostic = false
-        #endif
-
-        // 우선순위가 비어 있으면(처음 실행) 주변에서 발견한 내 기기로 자동 구성 — iPhone 먼저
         if Defaults[.priority].isEmpty && !diagnostic {
             Task { [weak self] in
                 for _ in 0..<60 {
@@ -89,24 +83,21 @@ final class AppModel {
         usage.deviceName = { [unowned self] in self.engine.tetherDeviceName }
         usage.canReadSSID = { [unowned self] in self.location.isAuthorized }
         hotspots.start()
-        if !diagnostic { engine.start() }   // 진단 모드에선 자동 전환 루프 끔
+        if !diagnostic { engine.start() }
         usage.start()
 
-        guard !diagnostic else { return }   // 진단 모드에선 전원 설정을 건드리지 않음
+        guard !diagnostic else { return }
 
-        // 이전 버전(sudoers 방식)이 켠 disablesleep이 남아 있으면 설정과 관계없이 먼저 복구
-        // (새 헬퍼가 승인되면 인증 후 다시 켬)
+        // Undo anything the sudoers-based version left on before the helper takes over.
         sleep.restoreLegacyIfNeeded()
 
-        // 마스터 스위치 OFF → 진행 중인 자동 전환 즉시 취소
         Task { [weak self] in
             for await enabled in Defaults.updates(.isEnabled, initial: false) {
                 if !enabled { self?.engine.cancelPending("자동 테더링 OFF", autoOnly: true) }
             }
         }
 
-        // 잠자기 방지 설정 변경 즉시 반영
-        // 켜기/끄기 의도는 기다리지 않고 즉시 기록 (reconcile이 인증 창 등으로 오래 걸려도 유실되지 않게)
+        // Record the intent right away; reconcile can be stuck behind an auth sheet.
         Task { [weak self] in
             for await on in Defaults.updates(.preventLidSleep, initial: false) {
                 guard let self else { return }
@@ -120,7 +111,6 @@ final class AppModel {
                 await self.sleep.reconcile(isTethered: self.engine.snapshot.isTethered)
             }
         }
-        // 테더링 상태/배터리 변화 주기 반영
         Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(20))
@@ -148,7 +138,7 @@ extension TetherEngine.Status {
         switch self {
         case .wifi(let ssid):
             #if DEBUG
-            if DemoMode.isActive { return "Wi-Fi · \(DemoMode.ssid)" }   // 스크린샷: 실제 SSID 노출 방지
+            if DemoMode.isActive { return "Wi-Fi · \(DemoMode.ssid)" }
             #endif
             return ssid.map { "Wi-Fi · \($0)" } ?? "Wi-Fi 연결됨"
         case .ethernet: return "유선 네트워크 연결됨"

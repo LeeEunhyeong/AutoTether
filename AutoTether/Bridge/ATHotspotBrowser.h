@@ -1,8 +1,5 @@
-// Thin wrapper around the private Sharing.framework class SFRemoteHotspotSession —
-// the same API behind the "Personal Hotspot" section of the macOS Wi-Fi menu (Instant Hotspot).
-// It can see nearby iPhone/iPad on the same Apple ID, wake their hotspot over Bluetooth,
-// and returns the hotspot SSID + password.
-// Approach adapted from github.com/samihalawa/mac-auto-hotspot (MIT).
+// Wraps the private SFRemoteHotspotSession (Sharing.framework) used by the Wi-Fi menu's Personal Hotspot section.
+// Based on github.com/samihalawa/mac-auto-hotspot (MIT).
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -23,7 +20,7 @@ typedef void (^ATHotspotCompletion)(NSString *_Nullable ssid, NSString *_Nullabl
 @property (nonatomic, copy, nullable) void (^onDevicesChanged)(NSArray<ATHotspotDevice *> *devices);
 - (void)start;
 - (void)stop;
-/// Asks the device to turn on its Personal Hotspot. Completion is called exactly once (main queue), with a 15 s timeout.
+// Completion runs once on the main queue; times out after 15 s.
 - (void)enableHotspotForDeviceWithIdentifier:(NSString *)identifier completion:(ATHotspotCompletion)completion;
 @end
 

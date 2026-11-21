@@ -2,7 +2,6 @@
 import SwiftUI
 import AppKit
 
-/// README 스크린샷용 익명 데모 값. 사용자 설정(UserDefaults)에 쓰지 않고 비영속 인자 도메인에만 넣음.
 enum DemoMode {
     static var isActive: Bool { CommandLine.arguments.contains("--demo-data") }
     static let ssid = "Home Wi-Fi"
@@ -21,7 +20,6 @@ enum DemoMode {
     }
 }
 
-/// 디버그용: `AutoTether --snapshot <dir>` → 주요 화면을 PNG로 저장하고 종료 (화면 녹화 권한 불필요)
 @MainActor
 enum SnapshotRenderer {
     static var outputDir: URL? {
@@ -34,7 +32,7 @@ enum SnapshotRenderer {
         guard let dir = outputDir else { return }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         Task { @MainActor in
-            try? await Task.sleep(for: .seconds(6))   // 기기 탐색/샘플 대기
+            try? await Task.sleep(for: .seconds(6))
             let model = AppModel.shared
             if DemoMode.isActive { model.engine.overrideStatusForDemo(.wifi(DemoMode.ssid)) }
             await render(MenuBarView().environment(model), size: NSSize(width: 360, height: 640), name: "menubar", dir: dir, fit: true)

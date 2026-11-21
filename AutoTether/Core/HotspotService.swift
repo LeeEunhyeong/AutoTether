@@ -11,24 +11,30 @@ struct HotspotDevice: Identifiable, Hashable {
 
     var isPad: Bool { model.hasPrefix("iPad") }
     var symbol: String { isPad ? "ipad" : "iphone" }
+
+    static func symbol(for name: String) -> String {
+        name.lowercased().contains("ipad") ? "ipad" : "iphone"
+    }
 }
 
-enum HotspotError: LocalizedError {
-    case unavailable
+struct HotspotUnavailableError: LocalizedError {
     var errorDescription: String? { "개인용 핫스팟 API를 사용할 수 없음" }
 }
 
-/// 주변 iPhone/iPad (같은 Apple ID) 탐색 및 핫스팟 원격 켜기
 @MainActor @Observable
 final class HotspotService {
     private let browser = ATHotspotBrowser()
     private(set) var devices: [HotspotDevice] = []
+
     var isAvailable: Bool { browser.isAvailable }
 
     func start() {
         KnownHotspots.names = Set(Defaults[.priority].map(\.name))
         #if DEBUG
-        if DemoMode.isActive { devices = DemoMode.devices; return }   // 스크린샷: 실제 기기 이름 노출 방지
+        if DemoMode.isActive {
+            devices = DemoMode.devices
+            return
+        }
         #endif
         guard browser.isAvailable else {
             log("Instant Hotspot API를 찾을 수 없음 — 저장된 Wi-Fi 연결 방식만 사용", .warning)
@@ -36,15 +42,14 @@ final class HotspotService {
         }
         browser.onDevicesChanged = { [weak self] list in
             guard let self else { return }
-            let mapped = list.map {
+            let found = list.map {
                 HotspotDevice(id: $0.identifier, name: $0.name, model: $0.model,
                               battery: $0.batteryLife, signal: $0.signalStrength)
             }
-            let before = Set(self.devices.map(\.name))
-            let after = Set(mapped.map(\.name))
-            for n in after.subtracting(before) { log("주변 기기 발견: \(n)") }
-            self.devices = mapped
-            KnownHotspots.names = Set(Defaults[.priority].map(\.name)).union(mapped.map(\.name))
+            let known = Set(devices.map(\.name))
+            for name in Set(found.map(\.name)).subtracting(known) { log("주변 기기 발견: \(name)") }
+            devices = found
+            KnownHotspots.names = Set(Defaults[.priority].map(\.name)).union(found.map(\.name))
         }
         browser.start()
     }
@@ -53,11 +58,11 @@ final class HotspotService {
         devices.first { $0.name.caseInsensitiveCompare(name) == .orderedSame }
     }
 
-    /// 기기에 핫스팟 켜기를 요청하고 (SSID, 비밀번호)를 받음. 블루투스 특성상 첫 시도 실패가 잦아 최대 3회 재시도.
-    func enableHotspot(_ device: HotspotDevice, token: OpToken? = nil) async throws -> (ssid: String, password: String?) {
-        var lastError: Error = HotspotError.unavailable
+    // The first Bluetooth request often fails, so retry a few times.
+    func enableHotspot(_ device: HotspotDevice, token: OpToken) async throws -> (ssid: String, password: String?) {
+        var lastError: Error = HotspotUnavailableError()
         for attempt in 1...3 {
-            if let token, !token.isValid { throw CancellationError() }
+            guard token.isValid else { throw CancellationError() }
             do {
                 return try await enableOnce(device)
             } catch {
@@ -72,8 +77,11 @@ final class HotspotService {
     private func enableOnce(_ device: HotspotDevice) async throws -> (ssid: String, password: String?) {
         try await withCheckedThrowingContinuation { cont in
             browser.enableHotspotForDevice(withIdentifier: device.id) { ssid, password, error in
-                if let ssid { cont.resume(returning: (ssid, password)) }
-                else { cont.resume(throwing: error ?? HotspotError.unavailable) }
+                if let ssid {
+                    cont.resume(returning: (ssid, password))
+                } else {
+                    cont.resume(throwing: error ?? HotspotUnavailableError())
+                }
             }
         }
     }

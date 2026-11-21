@@ -31,7 +31,6 @@
 		6DA743D28F30DC0DA3C452C0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9AD102955BD015F1E9F392 /* main.swift */; };
 		6F79392850F2535EDC183293 /* com.imgold.AutoTether.helper.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64CC23EF03D19592D7375D93 /* com.imgold.AutoTether.helper.plist */; };
 		72A715333A6D487D72713046 /* Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6295B0AD02B3F81E0879BDB8 /* Policy.swift */; };
-		79BBABBA26510243C9B16EF9 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5C58EE22F55F1B7B1DF133 /* Shell.swift */; };
 		7A44370D1442B7ED8A63B479 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3407D86BAE976CA748B9EC3 /* UsageStore.swift */; };
 		81873FA2CD5094F2D189966F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F08518005F27CEB0CFC7571 /* CoreLocation.framework */; };
 		81B86F432C190E276E67DD65 /* TetherEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */; };
@@ -40,12 +39,16 @@
 		9DFE2B13FAFAC99C0B852A4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B2B30864B4A98C362F9429 /* SystemConfiguration.framework */; };
 		A2635DCF7E85D746634A6025 /* ActivityLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1C5A87B6BB1D767172909 /* ActivityLog.swift */; };
 		A65C7FE3A1A0AFD385534707 /* UsageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F80DD5C71DAE0B5297242D1 /* UsageStoreTests.swift */; };
+		A792338169C5B034BB59D24E /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5B67FDC15C1EDD9C03B3E5 /* Shell.swift */; };
+		B06387B15BC80CFC551A22E7 /* OutputBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA918D9BA09752EC42983F /* OutputBuffer.swift */; };
 		B1EF075F209E6156BBD23673 /* SleepGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FA6995F7EA15DC735BC2CC /* SleepGuard.swift */; };
 		B2FA450C7D2E5AC85A24A4D1 /* AutoTetherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15055BE6D5E6914B757816E8 /* AutoTetherApp.swift */; };
 		BBFE5B456A89AD518835DFA0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF6FB430973607243DC69A2 /* GRDB */; };
 		BC02FFA72572C8E269526D7D /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */; };
+		BD579080383BEDBD778DC85D /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5B67FDC15C1EDD9C03B3E5 /* Shell.swift */; };
 		BF034065F24A96CBD9F1E396 /* HotspotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519E76A731434058D0FE5C5A /* HotspotService.swift */; };
 		C370C033B461980E20FEC1D3 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3407D86BAE976CA748B9EC3 /* UsageStore.swift */; };
+		C79BD8D0D0B7066BE8B261AC /* OutputBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA918D9BA09752EC42983F /* OutputBuffer.swift */; };
 		CB7FD7C88797530EAC3AB434 /* ATInterfaceCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 6757C99705D036E2EAB1BF29 /* ATInterfaceCounters.m */; };
 		D18A5E783769A3F3989E0D28 /* HelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */; };
 		D5BA967A6C146202D530F7BC /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 9A60CBC45D0DB6570D768417 /* Defaults */; };
@@ -91,13 +94,14 @@
 		0E023ACF535379465DB9C7C7 /* BrandStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandStyle.swift; sourceTree = "<group>"; };
 		15055BE6D5E6914B757816E8 /* AutoTetherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTetherApp.swift; sourceTree = "<group>"; };
 		1698F0118A703B7FF371B95C /* ATHotspotBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATHotspotBrowser.h; sourceTree = "<group>"; };
+		16BA918D9BA09752EC42983F /* OutputBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputBuffer.swift; sourceTree = "<group>"; };
 		18F32996A33FB51792A5794D /* ATInterfaceCounters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATInterfaceCounters.h; sourceTree = "<group>"; };
 		242901820F55E9261AA2226A /* AutoTether-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoTether-Bridging-Header.h"; sourceTree = "<group>"; };
 		2C0F68A55CBCFD3BCC3F854E /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		2C5B67FDC15C1EDD9C03B3E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreWLAN.framework; path = System/Library/Frameworks/CoreWLAN.framework; sourceTree = SDKROOT; };
 		43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetherEngine.swift; sourceTree = "<group>"; };
 		4D92B2DE53B3A0F88DE61C8D /* DebugCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCLI.swift; sourceTree = "<group>"; };
-		4F5C58EE22F55F1B7B1DF133 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		519E76A731434058D0FE5C5A /* HotspotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotspotService.swift; sourceTree = "<group>"; };
 		61D0FC54732BC91966AAAC41 /* AutoTether.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoTether.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6295B0AD02B3F81E0879BDB8 /* Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Policy.swift; sourceTree = "<group>"; };
@@ -197,6 +201,8 @@
 			children = (
 				ADD64A6D31F9B384D3EB0151 /* CodeIdentity.swift */,
 				BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */,
+				16BA918D9BA09752EC42983F /* OutputBuffer.swift */,
+				2C5B67FDC15C1EDD9C03B3E5 /* Shell.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -282,7 +288,6 @@
 				6295B0AD02B3F81E0879BDB8 /* Policy.swift */,
 				BE1EB975790436743A7ED88C /* PrivilegedHelper.swift */,
 				A7D33C614FF09C272FA45322 /* Settings.swift */,
-				4F5C58EE22F55F1B7B1DF133 /* Shell.swift */,
 				99FA6995F7EA15DC735BC2CC /* SleepGuard.swift */,
 				43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */,
 				E3407D86BAE976CA748B9EC3 /* UsageStore.swift */,
@@ -443,11 +448,12 @@
 				0A2968DAE89277F11CAD05CD /* MainWindow.swift in Sources */,
 				8D48EC6917C9146AE93AD8A8 /* MenuBarView.swift in Sources */,
 				47D1DE3AC6B9D4DBB5A254B0 /* Network.swift in Sources */,
+				C79BD8D0D0B7066BE8B261AC /* OutputBuffer.swift in Sources */,
 				D8222D57755D8A836FBCB8D9 /* Permissions.swift in Sources */,
 				172239F2D06E17F79310ED1F /* Policy.swift in Sources */,
 				615A6A3362D12F91BC0480EB /* PrivilegedHelper.swift in Sources */,
 				42A4B32B7E8FB80C97DD6735 /* Settings.swift in Sources */,
-				79BBABBA26510243C9B16EF9 /* Shell.swift in Sources */,
+				BD579080383BEDBD778DC85D /* Shell.swift in Sources */,
 				B1EF075F209E6156BBD23673 /* SleepGuard.swift in Sources */,
 				22A3160D5BD15B8456A9766E /* SnapshotRenderer.swift in Sources */,
 				81B86F432C190E276E67DD65 /* TetherEngine.swift in Sources */,
@@ -473,6 +479,8 @@
 			files = (
 				228D3F29E387B5BB79BC4411 /* CodeIdentity.swift in Sources */,
 				D18A5E783769A3F3989E0D28 /* HelperProtocol.swift in Sources */,
+				B06387B15BC80CFC551A22E7 /* OutputBuffer.swift in Sources */,
+				A792338169C5B034BB59D24E /* Shell.swift in Sources */,
 				6DA743D28F30DC0DA3C452C0 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -542,7 +550,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -681,7 +689,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;

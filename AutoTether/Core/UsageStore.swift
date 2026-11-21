@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 struct UsageBucket: Hashable {
-    let date: Date      // 시간 또는 일 단위 시작 시각
+    let date: Date
     let device: String
     let rx: Int64
     let tx: Int64
@@ -27,7 +27,6 @@ struct UsageTotals: Hashable {
     var total: Int64 { rx + tx }
 }
 
-/// 테더링 데이터 사용량 저장소 (GRDB / SQLite). 시간 단위 버킷 + 세션 기록.
 final class UsageStore: @unchecked Sendable {
     let db: DatabaseQueue
 
@@ -37,7 +36,6 @@ final class UsageStore: @unchecked Sendable {
         try self.init(directory: dir, fileName: fileName)
     }
 
-    /// 테스트용: 임의 디렉터리
     init(directory dir: URL, fileName: String) throws {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true,
                                                 attributes: [.posixPermissions: 0o700])
@@ -69,7 +67,7 @@ final class UsageStore: @unchecked Sendable {
         try migrator.migrate(db)
     }
 
-    // MARK: 쓰기
+    // MARK: - Writing
 
     func add(device: String, rx: Int64, tx: Int64, at date: Date) {
         let hour = UsageMath.hourBucket(date)
@@ -96,10 +94,8 @@ final class UsageStore: @unchecked Sendable {
         }
     }
 
-    /// 샘플 1건을 시간 버킷 + 세션에 한 트랜잭션으로 기록 (둘 중 하나만 반영되는 불일치 방지)
     enum RecordResult { case ok, sessionMissing, failed }
 
-    /// 세션 행이 없으면(다른 곳에서 초기화 등) 트랜잭션 전체를 롤백하고 sessionMissing 반환
     func record(sessionID: Int64, device: String, rx: Int64, tx: Int64, at date: Date,
                 sessionRx: Int64, sessionTx: Int64) -> RecordResult {
         struct Missing: Error {}
@@ -134,7 +130,6 @@ final class UsageStore: @unchecked Sendable {
         }
     }
 
-    /// 디버그 스냅샷용 샘플 데이터 (별도 DB 파일에만 사용)
     func seedDemoData() {
         resetAll()
         let now = Date()
@@ -153,7 +148,7 @@ final class UsageStore: @unchecked Sendable {
         }
     }
 
-    // MARK: 읽기
+    // MARK: - Reading
 
     func hourly(since: Date?) -> [UsageBucket] {
         let from = Int64((since ?? .distantPast).timeIntervalSince1970.clamped(min: 0))
@@ -167,7 +162,6 @@ final class UsageStore: @unchecked Sendable {
         }) ?? []
     }
 
-    /// 현지 시간대 기준 일별 합계
     func daily(since: Date?) -> [UsageBucket] {
         let cal = Calendar.current
         var map: [String: [Date: (Int64, Int64)]] = [:]
@@ -218,4 +212,11 @@ final class UsageStore: @unchecked Sendable {
 
 extension Double {
     func clamped(min lower: Double) -> Double { Swift.max(self, lower) }
+}
+
+extension Date {
+    static var startOfMonth: Date {
+        let cal = Calendar.current
+        return cal.date(from: cal.dateComponents([.year, .month], from: .now)) ?? .now
+    }
 }

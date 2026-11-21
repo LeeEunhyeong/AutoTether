@@ -1,6 +1,5 @@
 import XCTest
 
-/// 사용량 DB 테스트 (임시 디렉터리, 실제 DB는 건드리지 않음)
 final class UsageStoreTests: XCTestCase {
     var dir: URL!
     var store: UsageStore!

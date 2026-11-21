@@ -41,10 +41,10 @@ The app joins Wi-Fi networks automatically and holds a root-level power setting,
 | Threat | Mitigation |
 |---|---|
 | Evil-twin hotspot with the same name | Exact SSID, WPA2/3-Personal only (rejects anything that also advertises open/WEP/OWE/enterprise), password must come from the device |
-| WPA2 rogue AP capturing the handshake | Auto-join **requires WPA3 (SAE)** and verifies the negotiated security after joining. WPA2 is an explicit per-device opt-in. |
+| WPA2 rogue AP capturing the handshake | Auto-join only considers APs that advertise **WPA3 (SAE)** and drops the link right away unless SAE was actually negotiated. CoreWLAN can't force SAE on a transition-mode AP, so this verifies the result rather than preventing a WPA2 attempt with a matching AP. WPA2 is an explicit per-device opt-in. |
 | Rogue open network when returning to Wi-Fi | Open/OWE/WEP never accepted. An SSID is dropped if any weak AP shares its name. Never hands control to macOS auto-join. Security re-checked after joining. |
 | Privilege misuse | The root helper is installed with `SMAppService` and approved in System Settings. It accepts only XPC clients signed by the same team **and** with the app's identifier, and the app checks the helper's signature too. Its only verbs: read state, turn `pmset disablesleep` on/off, record/revoke consent, remove the legacy sudoers file from older versions, and restore-then-exit before an upgrade. |
-| Enabling without the user's consent | Switching the option on in the app shows a macOS Authorization Services prompt (Touch ID or admin password). The **helper verifies** that authorization itself and destroys it after use. It only accepts consent if, when the helper started, the authorization rule in the system database had the expected admin/non-shared/short-timeout policy. Consent is stored per user until revoked. Switching off requests revocation, and the app won't re-enable until the helper confirms it. |
+| Enabling without the user's consent | Switching the option on in the app shows a macOS Authorization Services prompt (Touch ID or admin password). The **helper verifies** that authorization itself and destroys it after use. It only accepts consent if the authorization rule in the system database has the expected admin/non-shared/short-timeout policy at that moment. Consent is stored per account (by account UUID, not numeric UID) until revoked. Consent from versions before protocol 4 isn't carried over: turn the option off and on again to re-authorize. Switching off requests revocation, and the app won't re-enable until the helper confirms it. |
 | Crash leaves the Mac unable to sleep | When the app's last XPC connection drops, the helper attempts to restore the setting immediately (about 0.5 s after `kill -9`, measured with the first helper version). It writes an ownership marker *before* enabling, so if the helper itself stops, it attempts the restore at its next start (at boot, while the helper stays registered and approved). |
 | Code injection / debugging | Hardened Runtime. Release builds strip `get-task-allow`. Diagnostic code is compiled into Debug builds only. |
 | Secrets on disk | Hotspot passwords never appear in process arguments, logs or files. Logs and DB are `0600`. Log input is sanitized. |
@@ -93,7 +93,6 @@ $APP --status                                   # network, devices, permissions
 $APP --test-connect "My iPhone" --and-return    # manual join → measure usage → return to Wi-Fi
 $APP --test-failover                            # automatic path (WPA3 required) → return
 $APP --test-cancel                              # turning the switch off aborts an in-flight failover
-$APP --filter-test "*"                          # run the evil-twin filter against nearby APs without joining
 $APP --snapshot ./out --demo-data               # render the UI to PNG with anonymized demo data
 DEVICE="My iPhone" HOME_SSID="Home_5G Home_2.4G" scripts/verify_security_cycle.sh
 ```

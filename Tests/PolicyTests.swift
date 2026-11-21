@@ -1,12 +1,8 @@
 import XCTest
 import CoreWLAN
 
-/// 핫스팟·Wi-Fi 보안 판단 테스트.
-/// 보안 방식 조합은 실기기 측정값(macOS 27 / iOS 26)을 그대로 옮겼다.
 final class SecurityPolicyTests: XCTestCase {
-    // iOS 26 개인용 핫스팟이 실제로 광고하는 보안 방식
     let iosHotspot: Set<CWSecurity> = [.wpaPersonalMixed, .wpa2Personal, .personal, .wpa3Personal, .wpa3Transition]
-    // 일반 WPA2 공유기 (CoreWLAN이 wpa3Transition도 true로 돌려줌 — 실측)
     let wpa2Router: Set<CWSecurity> = [.wpaPersonalMixed, .wpa2Personal, .personal, .wpa3Transition]
 
     func ap(_ sec: Set<CWSecurity>) -> APInfo {
@@ -19,7 +15,7 @@ final class SecurityPolicyTests: XCTestCase {
         APInfo(ssid: ssid, bssid: nil, rssi: rssi, securities: sec)
     }
 
-    // MARK: 핫스팟 후보
+    // MARK: - Hotspot candidates
 
     func testRealHotspotIsAcceptedAndRecognizedAsWPA3() {
         XCTAssertTrue(SecurityPolicy.isPersonalWPA(ap(iosHotspot)))
@@ -53,11 +49,9 @@ final class SecurityPolicyTests: XCTestCase {
         let weakWPA3 = ap(bssid: "bb", rssi: -70, iosHotspot)
         XCTAssertEqual(SecurityPolicy.bestHotspot([strongWPA2, weakWPA3], preferredBSSIDs: ["aa"])?.bssid, "bb")
 
-        // 예전 BSSID를 흉내 낸 AP라도 신호가 약하면 이기지 못함
         let spoof = ap(bssid: "old", rssi: -70, iosHotspot)
         let real = ap(bssid: "new", rssi: -40, iosHotspot)
         XCTAssertEqual(SecurityPolicy.bestHotspot([spoof, real], preferredBSSIDs: ["old"])?.bssid, "new")
-        // 완전 동률일 때만 BSSID 힌트 사용
         let a = ap(bssid: "x", rssi: -50, iosHotspot), b = ap(bssid: "y", rssi: -50, iosHotspot)
         XCTAssertEqual(SecurityPolicy.bestHotspot([a, b], preferredBSSIDs: ["y"])?.bssid, "y")
         XCTAssertNil(SecurityPolicy.bestHotspot([], preferredBSSIDs: []))
@@ -71,18 +65,18 @@ final class SecurityPolicyTests: XCTestCase {
         XCTAssertFalse(SecurityPolicy.hotspotAssociationAllowed(nil, requireSAE: false))
     }
 
-    // MARK: Wi-Fi 복귀 후보
+    // MARK: - Return candidates
 
     func testReturnCandidatesExcludeTaintedSSIDAndSortBySignal() {
         let scanned = [
             ap("Home_5G", rssi: -60, wpa2Router),
             ap("Home_2.4G", rssi: -45, wpa2Router),
-            ap("Home_2.4G", rssi: -50, wpa2Router),      // 같은 SSID 다른 AP → 한 번만
+            ap("Home_2.4G", rssi: -50, wpa2Router),
             ap("Cafe", rssi: -40, wpa2Router),
-            ap("Cafe", rssi: -80, [.none]),               // 같은 이름의 개방형 AP → Cafe 전체 제외
-            ap("Office", rssi: -55, [.wpa2Enterprise]),  // 엔터프라이즈는 허용
-            ap("Weak", rssi: -90, wpa2Router),            // 신호 약함
-            ap("Stranger", rssi: -30, wpa2Router),        // 저장 안 된 네트워크
+            ap("Cafe", rssi: -80, [.none]),
+            ap("Office", rssi: -55, [.wpa2Enterprise]),
+            ap("Weak", rssi: -90, wpa2Router),
+            ap("Stranger", rssi: -30, wpa2Router),
         ]
         let r = SecurityPolicy.returnCandidates(scanned, known: ["Home_5G", "Home_2.4G", "Cafe", "Office", "Weak"], minRSSI: -72)
         XCTAssertEqual(r, ["Home_2.4G", "Office", "Home_5G"])

@@ -1,4 +1,4 @@
-// 앱 아이콘 생성기: swift scripts/make_icon.swift
+// Usage: swift scripts/make_icon.swift
 import AppKit
 
 let out = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "AutoTether/Resources/Assets.xcassets/AppIcon.appiconset")
@@ -11,7 +11,7 @@ func render(_ px: Int) -> Data {
                                bytesPerRow: 0, bitsPerPixel: 0)!
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
-    // macOS 아이콘 그리드: 824/1024 본체 + 여백
+    // macOS icon grid: 824/1024 body plus margin
     let inset = s * 100 / 1024
     let rect = NSRect(x: inset, y: inset, width: s - inset * 2, height: s - inset * 2)
     let path = NSBezierPath(roundedRect: rect, xRadius: rect.width * 0.225, yRadius: rect.width * 0.225)
@@ -24,10 +24,8 @@ func render(_ px: Int) -> Data {
     NSGradient(colors: [NSColor(red: 0.20, green: 0.86, blue: 0.56, alpha: 1),
                         NSColor(red: 0.04, green: 0.52, blue: 0.96, alpha: 1)])!.draw(in: path, angle: -60)
     NSGraphicsContext.current?.restoreGraphicsState()
-    // 상단 하이라이트
     NSGradient(colors: [NSColor.white.withAlphaComponent(0.28), NSColor.white.withAlphaComponent(0)])!
         .draw(in: path, angle: -90)
-    // 심볼
     let cfg = NSImage.SymbolConfiguration(pointSize: s * 0.40, weight: .semibold)
         .applying(.init(paletteColors: [.white]))
     if let sym = NSImage(systemSymbolName: "personalhotspot", accessibilityDescription: nil)?.withSymbolConfiguration(cfg) {
