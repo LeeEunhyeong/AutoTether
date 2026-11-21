@@ -107,7 +107,7 @@ AutoTether/App      앱 진입점, 모델, 진단 CLI·스냅샷(Debug 전용)
 AutoTether/Core     전환 엔진, Wi-Fi 제어, 판단 로직(Policy), 사용량 저장, 잠자기 방지, XPC 클라이언트
 AutoTether/Bridge   Objective-C 브리지: Instant Hotspot(비공개 API), 인터페이스 카운터
 AutoTether/UI       메뉴바 패널과 메인 창 (SwiftUI, Liquid Glass)
-Helper/             권한 헬퍼(root LaunchDaemon): pmset만, 서명 검증 XPC, 인증 검증
+Helper/             권한 헬퍼(root LaunchDaemon): 잠자기 설정 전용, 서명 검증 XPC, 인증 검증
 Shared/             앱·헬퍼 공용 XPC 프로토콜, 서명 정보
 Tests/              단위 테스트 (앱을 띄우지 않으며 네트워크·전원 설정을 건드리지 않음)
 ```

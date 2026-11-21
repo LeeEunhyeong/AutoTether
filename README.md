@@ -107,7 +107,7 @@ AutoTether/App      app entry, model, debug CLI & snapshot renderer (Debug only)
 AutoTether/Core     engine, Wi-Fi control, policy (pure logic), usage store, sleep guard, XPC client
 AutoTether/Bridge   Objective-C bridges: Instant Hotspot (private API), interface counters
 AutoTether/UI       menu bar panel and main window (SwiftUI, Liquid Glass)
-Helper/             privileged LaunchDaemon (root): pmset only, signature-checked XPC, auth verification
+Helper/             privileged LaunchDaemon (root): sleep setting only, signature-checked XPC, auth verification
 Shared/             XPC protocol and code-signing identity shared by app and helper
 Tests/              unit tests (no app host; nothing touches your network or power settings)
 ```
