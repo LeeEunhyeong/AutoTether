@@ -38,12 +38,6 @@
     if ([self.session respondsToSelector:sel]) ((void (*)(id, SEL))objc_msgSend)(self.session, sel);
 }
 
-- (void)stop {
-    if (!self.session) return;
-    SEL sel = NSSelectorFromString(@"stopBrowsing");
-    if ([self.session respondsToSelector:sel]) ((void (*)(id, SEL))objc_msgSend)(self.session, sel);
-}
-
 static id ATValue(id obj, NSString *key) {
     @try { return [obj valueForKey:key]; } @catch (__unused id e) { return nil; }
 }
@@ -59,7 +53,6 @@ static id ATValue(id obj, NSString *key) {
         dev.model = [ATValue(d, @"model") description] ?: @"";
         dev.batteryLife = [ATValue(d, @"batteryLife") integerValue];
         dev.signalStrength = [ATValue(d, @"signalStrength") integerValue];
-        dev.networkType = [ATValue(d, @"networkType") integerValue];
         [out addObject:dev];
     }
     void (^cb)(NSArray *) = self.onDevicesChanged;

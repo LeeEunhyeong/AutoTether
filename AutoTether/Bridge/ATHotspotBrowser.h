@@ -10,7 +10,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *model;
 @property (nonatomic) NSInteger batteryLife;
 @property (nonatomic) NSInteger signalStrength;
-@property (nonatomic) NSInteger networkType;
 @end
 
 typedef void (^ATHotspotCompletion)(NSString *_Nullable ssid, NSString *_Nullable password, NSError *_Nullable error);
@@ -19,7 +18,6 @@ typedef void (^ATHotspotCompletion)(NSString *_Nullable ssid, NSString *_Nullabl
 @property (nonatomic, readonly) BOOL isAvailable;
 @property (nonatomic, copy, nullable) void (^onDevicesChanged)(NSArray<ATHotspotDevice *> *devices);
 - (void)start;
-- (void)stop;
 // Completion runs once on the main queue; times out after 15 s.
 - (void)enableHotspotForDeviceWithIdentifier:(NSString *)identifier completion:(ATHotspotCompletion)completion;
 @end
