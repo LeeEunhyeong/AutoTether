@@ -1,0 +1,7 @@
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.DS_Store
+# 개인 서명 설정 (팀 ID)
+Config/Local.xcconfig

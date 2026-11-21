@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.imgold.AutoTether.helper</string>
+	<key>BundleProgram</key>
+	<string>Contents/MacOS/AutoTetherHelper</string>
+	<key>MachServices</key>
+	<dict>
+		<key>com.imgold.AutoTether.helper</key>
+		<true/>
+	</dict>
+	<key>AssociatedBundleIdentifiers</key>
+	<array>
+		<string>com.imgold.AutoTether</string>
+	</array>
+	<!-- 부팅 시 한 번 실행: 이전에 켠 채 끝났다면(크래시·재부팅) 복구 -->
+	<key>RunAtLoad</key>
+	<true/>
+</dict>
+</plist>

@@ -1,0 +1,135 @@
+name: AutoTether
+options:
+  bundleIdPrefix: com.imgold
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+  developmentLanguage: ko
+
+packages:
+  Defaults:
+    url: https://github.com/sindresorhus/Defaults
+    from: 9.0.0
+  LaunchAtLogin:
+    url: https://github.com/sindresorhus/LaunchAtLogin-Modern
+    from: 1.1.0
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: 7.0.0
+
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.1.0"
+    CURRENT_PROJECT_VERSION: "3"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "Apple Development"
+    ENABLE_HARDENED_RUNTIME: YES
+    MACOSX_DEPLOYMENT_TARGET: "26.0"
+
+targets:
+  AutoTether:
+    type: application
+    platform: macOS
+    sources:
+      - path: AutoTether
+      - path: Shared
+      - path: Helper/com.imgold.AutoTether.helper.plist
+        buildPhase:
+          copyFiles:
+            destination: wrapper
+            subpath: Contents/Library/LaunchDaemons
+    dependencies:
+      - target: AutoTetherHelper
+        copy:
+          destination: executables
+        codeSign: false
+      - package: Defaults
+      - package: LaunchAtLogin
+      - package: GRDB
+      - sdk: CoreWLAN.framework
+      - sdk: SystemConfiguration.framework
+      - sdk: IOKit.framework
+      - sdk: CoreLocation.framework
+      - sdk: ServiceManagement.framework
+    info:
+      path: AutoTether/Info.plist
+      properties:
+        CFBundleDisplayName: AutoTether
+        CFBundleName: AutoTether
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: "© 2026 Gold"
+        NSLocationUsageDescription: "주변 Wi-Fi 이름(SSID)을 확인해 저장된 Wi-Fi로 자동 복귀하기 위해 필요합니다."
+        NSLocationWhenInUseUsageDescription: "주변 Wi-Fi 이름(SSID)을 확인해 저장된 Wi-Fi로 자동 복귀하기 위해 필요합니다."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.imgold.AutoTether
+        SWIFT_OBJC_BRIDGING_HEADER: AutoTether/Bridge/AutoTether-Bridging-Header.h
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: AutoTether/Info.plist
+      configs:
+        Release:
+          # Apple Development 서명이 자동으로 넣는 get-task-allow 제거 → 다른 프로세스의 디버거 부착/메모리 열람 차단
+          CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: ""
+          STRIP_INSTALLED_PRODUCT: YES
+
+  AutoTetherHelper:
+    type: tool
+    platform: macOS
+    sources:
+      - path: Helper
+        excludes:
+          - "*.plist"
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_NAME: AutoTetherHelper
+        PRODUCT_BUNDLE_IDENTIFIER: com.imgold.AutoTether.helper
+        GENERATE_INFOPLIST_FILE: YES
+        CREATE_INFOPLIST_SECTION_IN_BINARY: YES
+        SKIP_INSTALL: YES
+        # 코드 서명 식별자를 번들 ID로 고정 (앱이 이 식별자로 헬퍼를 검증)
+        OTHER_CODE_SIGN_FLAGS: "--identifier com.imgold.AutoTether.helper"
+      configs:
+        Release:
+          CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: ""
+
+  AutoTetherTests:
+    type: bundle.unit-test
+    platform: macOS
+    # 앱을 띄우지 않는 독립 테스트 (메뉴바 앱이 실행되면 네트워크·전원 설정을 건드릴 수 있음)
+    sources:
+      - path: Tests
+      - path: AutoTether/Core/Policy.swift
+      - path: AutoTether/Core/UsageStore.swift
+    dependencies:
+      - package: GRDB
+      - sdk: CoreWLAN.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.imgold.AutoTetherTests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  AutoTether:
+    build:
+      targets:
+        AutoTether: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - AutoTetherTests
+    archive:
+      config: Release

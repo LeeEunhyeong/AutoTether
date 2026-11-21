@@ -1,0 +1,821 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		08B99A66BFFB398A3777E444 /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */; };
+		093F896F22C1FB5E92AC941A /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = D41D9FEC513456C8445BD802 /* GRDB */; };
+		0A2968DAE89277F11CAD05CD /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B85850E20549C4401363BC /* MainWindow.swift */; };
+		10A115E3D4B148CEC69F094D /* AutoTetherHelper in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = AF4D8C14AB02728FF2BAF6E2 /* AutoTetherHelper */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1580A3A6166D9DF8DB2EB716 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998512316CBE028E5FAEE167 /* IOKit.framework */; };
+		15B1D781EFE49B50A0EBE7B3 /* UsageTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC05257245E75D1B9A55BB2F /* UsageTracker.swift */; };
+		15CF4F36C8D2BFFFA550F772 /* CodeIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD64A6D31F9B384D3EB0151 /* CodeIdentity.swift */; };
+		172239F2D06E17F79310ED1F /* Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6295B0AD02B3F81E0879BDB8 /* Policy.swift */; };
+		228D3F29E387B5BB79BC4411 /* CodeIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD64A6D31F9B384D3EB0151 /* CodeIdentity.swift */; };
+		22A3160D5BD15B8456A9766E /* SnapshotRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3ED9D7BAE1932C973E72B0F /* SnapshotRenderer.swift */; };
+		2D5AEE2BE7C1581007F59EBE /* ATHotspotBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DE9925AE33B977BE3405948 /* ATHotspotBrowser.m */; };
+		4199D68D0ABCD80ABD977513 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9598F5F0C8202B3F8D235921 /* AppModel.swift */; };
+		42A4B32B7E8FB80C97DD6735 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D33C614FF09C272FA45322 /* Settings.swift */; };
+		467C05869B666AF734055C1A /* DebugCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D92B2DE53B3A0F88DE61C8D /* DebugCLI.swift */; };
+		47D1DE3AC6B9D4DBB5A254B0 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F68A55CBCFD3BCC3F854E /* Network.swift */; };
+		4BB4C42E26240ECDE1B840AC /* BrandStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E023ACF535379465DB9C7C7 /* BrandStyle.swift */; };
+		4C8F3D29879B861F8F2F9B11 /* HelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */; };
+		5B0A12A113FA04F5AF1192E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63E4AEE1B6039A1C987D4289 /* Assets.xcassets */; };
+		615A6A3362D12F91BC0480EB /* PrivilegedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1EB975790436743A7ED88C /* PrivilegedHelper.swift */; };
+		6A1681685BF715DF0B1FA1B5 /* PolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D7B56FBA949B8010CDAA0D /* PolicyTests.swift */; };
+		6A51159C801311A2FE8A288D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F695EF59FF072F9E8FEAE3C /* ServiceManagement.framework */; };
+		6DA743D28F30DC0DA3C452C0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9AD102955BD015F1E9F392 /* main.swift */; };
+		6F79392850F2535EDC183293 /* com.imgold.AutoTether.helper.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64CC23EF03D19592D7375D93 /* com.imgold.AutoTether.helper.plist */; };
+		72A715333A6D487D72713046 /* Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6295B0AD02B3F81E0879BDB8 /* Policy.swift */; };
+		79BBABBA26510243C9B16EF9 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5C58EE22F55F1B7B1DF133 /* Shell.swift */; };
+		7A44370D1442B7ED8A63B479 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3407D86BAE976CA748B9EC3 /* UsageStore.swift */; };
+		81873FA2CD5094F2D189966F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F08518005F27CEB0CFC7571 /* CoreLocation.framework */; };
+		81B86F432C190E276E67DD65 /* TetherEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */; };
+		8D48EC6917C9146AE93AD8A8 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F2A4EE4CC4342F08E735D8 /* MenuBarView.swift */; };
+		96A096AC8B81E322E9079B1F /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 763050DD0BBEAAF511D5A7B0 /* LaunchAtLogin */; };
+		9DFE2B13FAFAC99C0B852A4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B2B30864B4A98C362F9429 /* SystemConfiguration.framework */; };
+		A2635DCF7E85D746634A6025 /* ActivityLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1C5A87B6BB1D767172909 /* ActivityLog.swift */; };
+		A65C7FE3A1A0AFD385534707 /* UsageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F80DD5C71DAE0B5297242D1 /* UsageStoreTests.swift */; };
+		B1EF075F209E6156BBD23673 /* SleepGuard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FA6995F7EA15DC735BC2CC /* SleepGuard.swift */; };
+		B2FA450C7D2E5AC85A24A4D1 /* AutoTetherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15055BE6D5E6914B757816E8 /* AutoTetherApp.swift */; };
+		BBFE5B456A89AD518835DFA0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF6FB430973607243DC69A2 /* GRDB */; };
+		BC02FFA72572C8E269526D7D /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */; };
+		BF034065F24A96CBD9F1E396 /* HotspotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519E76A731434058D0FE5C5A /* HotspotService.swift */; };
+		C370C033B461980E20FEC1D3 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3407D86BAE976CA748B9EC3 /* UsageStore.swift */; };
+		CB7FD7C88797530EAC3AB434 /* ATInterfaceCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 6757C99705D036E2EAB1BF29 /* ATInterfaceCounters.m */; };
+		D18A5E783769A3F3989E0D28 /* HelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */; };
+		D5BA967A6C146202D530F7BC /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 9A60CBC45D0DB6570D768417 /* Defaults */; };
+		D8222D57755D8A836FBCB8D9 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6AEE05C0F815913F2BD3B /* Permissions.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AE34A9A8B9BF5D2BA6A2F69F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DFF2FB37061D05B91BE2007 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10562B21E975ACD01190510C;
+			remoteInfo = AutoTetherHelper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		558A324D621E069657D7F14C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+				6F79392850F2535EDC183293 /* com.imgold.AutoTether.helper.plist in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6C88C9747C5E98A64E1EBC5 /* Embed Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				10A115E3D4B148CEC69F094D /* AutoTetherHelper in Embed Dependencies */,
+			);
+			name = "Embed Dependencies";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		06B75397E674B7CB23D3995D /* AutoTetherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoTetherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E023ACF535379465DB9C7C7 /* BrandStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandStyle.swift; sourceTree = "<group>"; };
+		15055BE6D5E6914B757816E8 /* AutoTetherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTetherApp.swift; sourceTree = "<group>"; };
+		1698F0118A703B7FF371B95C /* ATHotspotBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATHotspotBrowser.h; sourceTree = "<group>"; };
+		18F32996A33FB51792A5794D /* ATInterfaceCounters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATInterfaceCounters.h; sourceTree = "<group>"; };
+		242901820F55E9261AA2226A /* AutoTether-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoTether-Bridging-Header.h"; sourceTree = "<group>"; };
+		2C0F68A55CBCFD3BCC3F854E /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreWLAN.framework; path = System/Library/Frameworks/CoreWLAN.framework; sourceTree = SDKROOT; };
+		43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetherEngine.swift; sourceTree = "<group>"; };
+		4D92B2DE53B3A0F88DE61C8D /* DebugCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCLI.swift; sourceTree = "<group>"; };
+		4F5C58EE22F55F1B7B1DF133 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
+		519E76A731434058D0FE5C5A /* HotspotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotspotService.swift; sourceTree = "<group>"; };
+		61D0FC54732BC91966AAAC41 /* AutoTether.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoTether.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6295B0AD02B3F81E0879BDB8 /* Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Policy.swift; sourceTree = "<group>"; };
+		63E4AEE1B6039A1C987D4289 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		64CC23EF03D19592D7375D93 /* com.imgold.AutoTether.helper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = com.imgold.AutoTether.helper.plist; sourceTree = "<group>"; };
+		6757C99705D036E2EAB1BF29 /* ATInterfaceCounters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATInterfaceCounters.m; sourceTree = "<group>"; };
+		70F2A4EE4CC4342F08E735D8 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		7F08518005F27CEB0CFC7571 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		82B2B30864B4A98C362F9429 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		88D7B56FBA949B8010CDAA0D /* PolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyTests.swift; sourceTree = "<group>"; };
+		8DE9925AE33B977BE3405948 /* ATHotspotBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATHotspotBrowser.m; sourceTree = "<group>"; };
+		8F695EF59FF072F9E8FEAE3C /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		8F80DD5C71DAE0B5297242D1 /* UsageStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStoreTests.swift; sourceTree = "<group>"; };
+		9598F5F0C8202B3F8D235921 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		998512316CBE028E5FAEE167 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		99FA6995F7EA15DC735BC2CC /* SleepGuard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepGuard.swift; sourceTree = "<group>"; };
+		A7D33C614FF09C272FA45322 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		ADD64A6D31F9B384D3EB0151 /* CodeIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeIdentity.swift; sourceTree = "<group>"; };
+		AF4D8C14AB02728FF2BAF6E2 /* AutoTetherHelper */ = {isa = PBXFileReference; includeInIndex = 0; path = AutoTetherHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0C6AEE05C0F815913F2BD3B /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		B151E069EB65070D26A7DDDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BC05257245E75D1B9A55BB2F /* UsageTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageTracker.swift; sourceTree = "<group>"; };
+		BE1EB975790436743A7ED88C /* PrivilegedHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelper.swift; sourceTree = "<group>"; };
+		BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperProtocol.swift; sourceTree = "<group>"; };
+		CE9AD102955BD015F1E9F392 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		D1398ED5250D84AABE8D3203 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		E0A1C5A87B6BB1D767172909 /* ActivityLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLog.swift; sourceTree = "<group>"; };
+		E3407D86BAE976CA748B9EC3 /* UsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStore.swift; sourceTree = "<group>"; };
+		F3ED9D7BAE1932C973E72B0F /* SnapshotRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotRenderer.swift; sourceTree = "<group>"; };
+		F6B85850E20549C4401363BC /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		98894DC96732D635BC96ECD6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5BA967A6C146202D530F7BC /* Defaults in Frameworks */,
+				96A096AC8B81E322E9079B1F /* LaunchAtLogin in Frameworks */,
+				BBFE5B456A89AD518835DFA0 /* GRDB in Frameworks */,
+				BC02FFA72572C8E269526D7D /* CoreWLAN.framework in Frameworks */,
+				9DFE2B13FAFAC99C0B852A4A /* SystemConfiguration.framework in Frameworks */,
+				1580A3A6166D9DF8DB2EB716 /* IOKit.framework in Frameworks */,
+				81873FA2CD5094F2D189966F /* CoreLocation.framework in Frameworks */,
+				6A51159C801311A2FE8A288D /* ServiceManagement.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF520D1EC99D4A40A5536F53 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				093F896F22C1FB5E92AC941A /* GRDB in Frameworks */,
+				08B99A66BFFB398A3777E444 /* CoreWLAN.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		35062A179974133282B40F44 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				64CC23EF03D19592D7375D93 /* com.imgold.AutoTether.helper.plist */,
+				CE9AD102955BD015F1E9F392 /* main.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		5E6889B0CD448391AB4E9F75 = {
+			isa = PBXGroup;
+			children = (
+				EEB873A3E6A55BFB7FBD4883 /* AutoTether */,
+				AFCEAD4960802F221A884D65 /* Config */,
+				35062A179974133282B40F44 /* Helper */,
+				8ADD792190B1AE9F0F5F34C3 /* Shared */,
+				AC65EBD304B4417465800EF6 /* Tests */,
+				6EF767897CDB1608FD2C7187 /* Frameworks */,
+				F77DF49955A2A19910DEF454 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6EF767897CDB1608FD2C7187 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F08518005F27CEB0CFC7571 /* CoreLocation.framework */,
+				3C27B235D6FE40BEDEC26A16 /* CoreWLAN.framework */,
+				998512316CBE028E5FAEE167 /* IOKit.framework */,
+				8F695EF59FF072F9E8FEAE3C /* ServiceManagement.framework */,
+				82B2B30864B4A98C362F9429 /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8ADD792190B1AE9F0F5F34C3 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				ADD64A6D31F9B384D3EB0151 /* CodeIdentity.swift */,
+				BEBBAAFD6790736484EE8BF0 /* HelperProtocol.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		98ACCBA0B36E953FEA8F2336 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				0E023ACF535379465DB9C7C7 /* BrandStyle.swift */,
+				F6B85850E20549C4401363BC /* MainWindow.swift */,
+				70F2A4EE4CC4342F08E735D8 /* MenuBarView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		AC65EBD304B4417465800EF6 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				88D7B56FBA949B8010CDAA0D /* PolicyTests.swift */,
+				8F80DD5C71DAE0B5297242D1 /* UsageStoreTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		AFCEAD4960802F221A884D65 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				D1398ED5250D84AABE8D3203 /* Signing.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		B139F166135252B6E13BE85F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				63E4AEE1B6039A1C987D4289 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B85B84592282FC7AEB0F0C88 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9598F5F0C8202B3F8D235921 /* AppModel.swift */,
+				15055BE6D5E6914B757816E8 /* AutoTetherApp.swift */,
+				4D92B2DE53B3A0F88DE61C8D /* DebugCLI.swift */,
+				F3ED9D7BAE1932C973E72B0F /* SnapshotRenderer.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D3AFDBC149CC4043E3EE9326 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				1698F0118A703B7FF371B95C /* ATHotspotBrowser.h */,
+				8DE9925AE33B977BE3405948 /* ATHotspotBrowser.m */,
+				18F32996A33FB51792A5794D /* ATInterfaceCounters.h */,
+				6757C99705D036E2EAB1BF29 /* ATInterfaceCounters.m */,
+				242901820F55E9261AA2226A /* AutoTether-Bridging-Header.h */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		EEB873A3E6A55BFB7FBD4883 /* AutoTether */ = {
+			isa = PBXGroup;
+			children = (
+				B151E069EB65070D26A7DDDF /* Info.plist */,
+				B85B84592282FC7AEB0F0C88 /* App */,
+				D3AFDBC149CC4043E3EE9326 /* Bridge */,
+				F6466D02213A2600DCA2B39E /* Core */,
+				B139F166135252B6E13BE85F /* Resources */,
+				98ACCBA0B36E953FEA8F2336 /* UI */,
+			);
+			path = AutoTether;
+			sourceTree = "<group>";
+		};
+		F6466D02213A2600DCA2B39E /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				E0A1C5A87B6BB1D767172909 /* ActivityLog.swift */,
+				519E76A731434058D0FE5C5A /* HotspotService.swift */,
+				2C0F68A55CBCFD3BCC3F854E /* Network.swift */,
+				B0C6AEE05C0F815913F2BD3B /* Permissions.swift */,
+				6295B0AD02B3F81E0879BDB8 /* Policy.swift */,
+				BE1EB975790436743A7ED88C /* PrivilegedHelper.swift */,
+				A7D33C614FF09C272FA45322 /* Settings.swift */,
+				4F5C58EE22F55F1B7B1DF133 /* Shell.swift */,
+				99FA6995F7EA15DC735BC2CC /* SleepGuard.swift */,
+				43545DA40B4AC8FA38C969F2 /* TetherEngine.swift */,
+				E3407D86BAE976CA748B9EC3 /* UsageStore.swift */,
+				BC05257245E75D1B9A55BB2F /* UsageTracker.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		F77DF49955A2A19910DEF454 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				61D0FC54732BC91966AAAC41 /* AutoTether.app */,
+				AF4D8C14AB02728FF2BAF6E2 /* AutoTetherHelper */,
+				06B75397E674B7CB23D3995D /* AutoTetherTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		10562B21E975ACD01190510C /* AutoTetherHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2FAEBC50C61AFD3D93C13426 /* Build configuration list for PBXNativeTarget "AutoTetherHelper" */;
+			buildPhases = (
+				9A59C239B9982D3DB13E688E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AutoTetherHelper;
+			packageProductDependencies = (
+			);
+			productName = AutoTetherHelper;
+			productReference = AF4D8C14AB02728FF2BAF6E2 /* AutoTetherHelper */;
+			productType = "com.apple.product-type.tool";
+		};
+		30F6F431F9B30C7BC6B176C5 /* AutoTether */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAC7DE5429D095B87826377B /* Build configuration list for PBXNativeTarget "AutoTether" */;
+			buildPhases = (
+				29954461EA26A63D955E595A /* Sources */,
+				E9E88122790512192609CA4D /* Resources */,
+				558A324D621E069657D7F14C /* CopyFiles */,
+				98894DC96732D635BC96ECD6 /* Frameworks */,
+				A6C88C9747C5E98A64E1EBC5 /* Embed Dependencies */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				942DC04F715643828BBA2595 /* PBXTargetDependency */,
+			);
+			name = AutoTether;
+			packageProductDependencies = (
+				9A60CBC45D0DB6570D768417 /* Defaults */,
+				763050DD0BBEAAF511D5A7B0 /* LaunchAtLogin */,
+				5CF6FB430973607243DC69A2 /* GRDB */,
+			);
+			productName = AutoTether;
+			productReference = 61D0FC54732BC91966AAAC41 /* AutoTether.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D5849A5F9ADC176748B7E093 /* AutoTetherTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56CAC0B8BBE6027D9F8D59BF /* Build configuration list for PBXNativeTarget "AutoTetherTests" */;
+			buildPhases = (
+				7838DE45042F4161CA86512B /* Sources */,
+				CF520D1EC99D4A40A5536F53 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AutoTetherTests;
+			packageProductDependencies = (
+				D41D9FEC513456C8445BD802 /* GRDB */,
+			);
+			productName = AutoTetherTests;
+			productReference = 06B75397E674B7CB23D3995D /* AutoTetherTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3DFF2FB37061D05B91BE2007 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					10562B21E975ACD01190510C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					30F6F431F9B30C7BC6B176C5 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					D5849A5F9ADC176748B7E093 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 2728B9AC5325CA847EEE64E9 /* Build configuration list for PBXProject "AutoTether" */;
+			developmentRegion = ko;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				ko,
+			);
+			mainGroup = 5E6889B0CD448391AB4E9F75;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B382B843D4213DDF32B9E57F /* XCRemoteSwiftPackageReference "Defaults" */,
+				619FA1534C5233FB2728E020 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				B3660EF6B8C0B9CE70FE7CB0 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F77DF49955A2A19910DEF454 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30F6F431F9B30C7BC6B176C5 /* AutoTether */,
+				10562B21E975ACD01190510C /* AutoTetherHelper */,
+				D5849A5F9ADC176748B7E093 /* AutoTetherTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E9E88122790512192609CA4D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B0A12A113FA04F5AF1192E3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		29954461EA26A63D955E595A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D5AEE2BE7C1581007F59EBE /* ATHotspotBrowser.m in Sources */,
+				CB7FD7C88797530EAC3AB434 /* ATInterfaceCounters.m in Sources */,
+				A2635DCF7E85D746634A6025 /* ActivityLog.swift in Sources */,
+				4199D68D0ABCD80ABD977513 /* AppModel.swift in Sources */,
+				B2FA450C7D2E5AC85A24A4D1 /* AutoTetherApp.swift in Sources */,
+				4BB4C42E26240ECDE1B840AC /* BrandStyle.swift in Sources */,
+				15CF4F36C8D2BFFFA550F772 /* CodeIdentity.swift in Sources */,
+				467C05869B666AF734055C1A /* DebugCLI.swift in Sources */,
+				4C8F3D29879B861F8F2F9B11 /* HelperProtocol.swift in Sources */,
+				BF034065F24A96CBD9F1E396 /* HotspotService.swift in Sources */,
+				0A2968DAE89277F11CAD05CD /* MainWindow.swift in Sources */,
+				8D48EC6917C9146AE93AD8A8 /* MenuBarView.swift in Sources */,
+				47D1DE3AC6B9D4DBB5A254B0 /* Network.swift in Sources */,
+				D8222D57755D8A836FBCB8D9 /* Permissions.swift in Sources */,
+				172239F2D06E17F79310ED1F /* Policy.swift in Sources */,
+				615A6A3362D12F91BC0480EB /* PrivilegedHelper.swift in Sources */,
+				42A4B32B7E8FB80C97DD6735 /* Settings.swift in Sources */,
+				79BBABBA26510243C9B16EF9 /* Shell.swift in Sources */,
+				B1EF075F209E6156BBD23673 /* SleepGuard.swift in Sources */,
+				22A3160D5BD15B8456A9766E /* SnapshotRenderer.swift in Sources */,
+				81B86F432C190E276E67DD65 /* TetherEngine.swift in Sources */,
+				C370C033B461980E20FEC1D3 /* UsageStore.swift in Sources */,
+				15B1D781EFE49B50A0EBE7B3 /* UsageTracker.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7838DE45042F4161CA86512B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72A715333A6D487D72713046 /* Policy.swift in Sources */,
+				6A1681685BF715DF0B1FA1B5 /* PolicyTests.swift in Sources */,
+				7A44370D1442B7ED8A63B479 /* UsageStore.swift in Sources */,
+				A65C7FE3A1A0AFD385534707 /* UsageStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A59C239B9982D3DB13E688E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				228D3F29E387B5BB79BC4411 /* CodeIdentity.swift in Sources */,
+				D18A5E783769A3F3989E0D28 /* HelperProtocol.swift in Sources */,
+				6DA743D28F30DC0DA3C452C0 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		942DC04F715643828BBA2595 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10562B21E975ACD01190510C /* AutoTetherHelper */;
+			targetProxy = AE34A9A8B9BF5D2BA6A2F69F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		130E43A5980502AB1EE07016 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AutoTether/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTether;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "AutoTether/Bridge/AutoTether-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		2C26C1A011642D57A70C9911 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1398ED5250D84AABE8D3203 /* Signing.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		63FBD6670AA888EBFDA4F24A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AutoTether/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTether;
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "AutoTether/Bridge/AutoTether-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		917F5974ECA8A7842403A82E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTetherTests;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		96A9A0A2141251716939CBBB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CODE_SIGN_FLAGS = "--identifier com.imgold.AutoTether.helper";
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTether.helper;
+				PRODUCT_NAME = AutoTetherHelper;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		9DBB5A3513CBB6311F4709E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTetherTests;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BC8B658A3A82E6A692F83BCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1398ED5250D84AABE8D3203 /* Signing.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D8B86B6DEAE44643045A4A10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CODE_SIGN_FLAGS = "--identifier com.imgold.AutoTether.helper";
+				PRODUCT_BUNDLE_IDENTIFIER = com.imgold.AutoTether.helper;
+				PRODUCT_NAME = AutoTetherHelper;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2728B9AC5325CA847EEE64E9 /* Build configuration list for PBXProject "AutoTether" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C26C1A011642D57A70C9911 /* Debug */,
+				BC8B658A3A82E6A692F83BCE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2FAEBC50C61AFD3D93C13426 /* Build configuration list for PBXNativeTarget "AutoTetherHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96A9A0A2141251716939CBBB /* Debug */,
+				D8B86B6DEAE44643045A4A10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		56CAC0B8BBE6027D9F8D59BF /* Build configuration list for PBXNativeTarget "AutoTetherTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				917F5974ECA8A7842403A82E /* Debug */,
+				9DBB5A3513CBB6311F4709E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BAC7DE5429D095B87826377B /* Build configuration list for PBXNativeTarget "AutoTether" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				130E43A5980502AB1EE07016 /* Debug */,
+				63FBD6670AA888EBFDA4F24A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		619FA1534C5233FB2728E020 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+		B3660EF6B8C0B9CE70FE7CB0 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin-Modern";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		B382B843D4213DDF32B9E57F /* XCRemoteSwiftPackageReference "Defaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Defaults";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5CF6FB430973607243DC69A2 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 619FA1534C5233FB2728E020 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		763050DD0BBEAAF511D5A7B0 /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3660EF6B8C0B9CE70FE7CB0 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
+			productName = LaunchAtLogin;
+		};
+		9A60CBC45D0DB6570D768417 /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B382B843D4213DDF32B9E57F /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
+		};
+		D41D9FEC513456C8445BD802 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 619FA1534C5233FB2728E020 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 3DFF2FB37061D05B91BE2007 /* Project object */;
+}

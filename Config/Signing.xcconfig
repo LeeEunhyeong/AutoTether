@@ -1,0 +1,6 @@
+// 서명 설정
+// 자기 Apple 개발 팀으로 빌드하려면 이 폴더에 Local.xcconfig 를 만들고 아래 한 줄을 적으세요 (git에 올라가지 않음):
+//   DEVELOPMENT_TEAM = XXXXXXXXXX
+// 팀 ID: Xcode › Settings › Accounts, 또는 `security find-identity -v -p codesigning` 출력의 괄호 안 값이 아닌 인증서 OU
+DEVELOPMENT_TEAM =
+#include? "Local.xcconfig"
